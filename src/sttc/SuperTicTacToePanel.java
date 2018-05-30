@@ -14,7 +14,8 @@ import javax.swing.JPanel;
 import javafx.scene.control.Cell;
 
 public class SuperTicTacToePanel extends JPanel {
-    protected static JButton[][] board;
+    private static JButton[][] board;
+
     private CellStatus iCell;
     private JButton quitButton;
     private JButton resetButton;
@@ -42,6 +43,10 @@ public class SuperTicTacToePanel extends JPanel {
         xIcon = new ImageIcon(getClass().getResource(("x.jpg")));
         oIcon = new ImageIcon(getClass().getResource(("o.jpg")));
         emptyIcon = new ImageIcon(getClass().getResource(("e.jpg")));
+
+
+
+
 
         // This is the game panel setup
         superPanel = new JPanel();
@@ -142,8 +147,13 @@ public class SuperTicTacToePanel extends JPanel {
             // Finds selected button
             for (int row = 0; row < boardSize; row++) {
                 for (int col = 0; col < boardSize; col++) {
-                    if (board[row][col] == event.getSource())
+                    if (board[row][col] == event.getSource()) {
                         game.select(row, col);
+
+                        game.setUndoCol(col);
+                        game.setUndoRows(row);
+                        game.undoIndex++;
+                    }
                 }
 
             }
@@ -194,8 +204,8 @@ public class SuperTicTacToePanel extends JPanel {
                 }
             }
             if(event.getSource() == undoButton){
-//                game.undo();
-//                displayBoard();
+                game.undo();
+                displayBoard();
             }
         }
     }

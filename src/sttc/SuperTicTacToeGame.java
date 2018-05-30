@@ -4,7 +4,10 @@ import javax.swing.JOptionPane;
 
 public class SuperTicTacToeGame {
     private CellStatus[][] board;
-    private CellStatus[][] previousBoard;
+    protected int [] undoRows;
+    protected int [] undoCol;
+    protected int undoIndex;
+
     private boolean xTurn;
     private boolean rememberChoice;
     private int delete;
@@ -64,23 +67,20 @@ public class SuperTicTacToeGame {
         //sets size of cell status and sets everything to empty
         //Status can contain (X,O, or empty) (See CellStatus.java)
         board = new CellStatus[SuperTicTacToePanel.getBoardSize()][SuperTicTacToePanel.getBoardSize()];
-        previousBoard = new CellStatus[SuperTicTacToePanel.getBoardSize()][SuperTicTacToePanel.getBoardSize()];
         for (int row = 0; row < SuperTicTacToePanel.getBoardSize();  row++) {
             for (int col = 0; col < SuperTicTacToePanel.getBoardSize(); col++) {
                 board[row][col] = CellStatus.EMPTY;
-                previousBoard[row][col] = CellStatus.EMPTY;
+
             }
         }
+
+        //instantiate 2 arrays to keep track of the moves and a counter
+        undoCol = new int[boardLength*boardLength];
+        undoRows = new int [boardLength*boardLength];
+        undoIndex = 0;
     }
 
     public void select(int row, int col) {
-
-//        // copy the previous display before se
-//        for (int rowIn = 0; rowIn < SuperTicTacToePanel.getBoardSize(); rowIn++) {
-//            for (int column = 0; column < SuperTicTacToePanel.getBoardSize(); column++) {
-//                previousBoard[rowIn][column] = board[rowIn][column];
-//            }
-//        }
 
         //sets status based on the users turn
         if (this.xTurn) {
@@ -215,10 +215,41 @@ public class SuperTicTacToeGame {
         return status;
     }
 
-//    public void undo(){
-//        board = previousBoard;
-//    }
+    public void undo(){
+        if(undoIndex > 0) {
+            undoIndex--;
+            board[getUndoRows()][getUndoCol()] = CellStatus.EMPTY;
+            if (this.xTurn) {
+                this.xTurn = false;
+            } else if (!this.xTurn) {
+                this.xTurn = true;
+            }
+        }
+    }
 
+    public int getUndoRows() {
+        return undoRows[getUndoIndex()];
+    }
+
+    public void setUndoRows(int index) {
+        this.undoRows[getUndoIndex()] = index;
+    }
+
+    public int getUndoCol() {
+        return undoCol[getUndoIndex()];
+    }
+
+    public void setUndoCol(int index) {
+        this.undoCol[getUndoIndex()] = index;
+    }
+
+    public int getUndoIndex() {
+        return undoIndex;
+    }
+
+    public void setUndoIndex(int undoIndex) {
+        this.undoIndex = undoIndex;
+    }
 
     public CellStatus getCell(int row, int col) {
 
