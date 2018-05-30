@@ -9,11 +9,11 @@ public class SuperTicTacToeGame {
     private boolean rememberChoice;
     private int delete;
     private GameStatus status;
-    protected String sizeSelect;
-    protected String connections;
-    protected int connecter;
-    protected int boardLength;
-    int turn;
+    private String sizeSelect;
+    private String connections;
+    private int connecter;
+    private int boardLength;
+    private int turn;
 
 
     public SuperTicTacToeGame() {
@@ -23,9 +23,11 @@ public class SuperTicTacToeGame {
     }
 
     public void setupGame(){
+
         //String to select board size
         this.sizeSelect =JOptionPane.showInputDialog(null, "Enter a board size between 3 and 9: ");
         boardLength = Integer.parseInt(sizeSelect);
+
         while(boardLength < 3 || boardLength > 9){
             JOptionPane.showMessageDialog(null, "Invalid input");
             this.sizeSelect =JOptionPane.showInputDialog(null,"Enter a board size between 3 and 9: ");
@@ -36,6 +38,12 @@ public class SuperTicTacToeGame {
         //enter the amount of connections needed to win between 3 and boardSize
         this.connections =JOptionPane.showInputDialog(null, "Enter a connections to win between 2 and " + boardLength + " : ");
         this.connecter = Integer.parseInt(connections);
+
+        while(connecter < 2 || connecter > boardLength){
+            JOptionPane.showMessageDialog(null, "Invalid input");
+            this.connections =JOptionPane.showInputDialog(null, "Enter a connections to win between 2 and " + boardLength + " : ");
+            this.connecter = Integer.parseInt(connections);
+        }
         SuperTicTacToePanel.setCountToWin(this.connecter);
 
 
