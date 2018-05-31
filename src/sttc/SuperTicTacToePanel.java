@@ -1,19 +1,15 @@
 package sttc;
 
-import java.awt.BorderLayout;
-import java.awt.GridLayout;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
+import javax.swing.*;
 
-import javafx.scene.control.Cell;
 
 public class SuperTicTacToePanel extends JPanel {
+
     private static JButton[][] board;
 
     private CellStatus iCell;
@@ -27,12 +23,17 @@ public class SuperTicTacToePanel extends JPanel {
     private JPanel superPanel;
 
 
-    // Swear there is a reason I made these static, but I can't remember why
     private static int boardSize;
     private static int countToWin;
     private optionsListener oListen;
     private ButtonListener Listen;
     private JPanel optionsPanel;
+
+    private JLabel turn;
+    private JLabel xWins;
+    private JLabel oWins;
+    private int xWinsCount;
+    private int oWinsCount;
 
     public SuperTicTacToePanel() {
 
@@ -45,25 +46,35 @@ public class SuperTicTacToePanel extends JPanel {
         emptyIcon = new ImageIcon(getClass().getResource(("e.jpg")));
 
 
-
-
-
         // This is the game panel setup
         superPanel = new JPanel();
         superPanel.setLayout(new GridLayout(boardSize, boardSize));
         add(superPanel, BorderLayout.CENTER);
         Listen = new ButtonListener();
 
-        // Adds the buttons and icons to the board
+        // Adds the buttons, icons and labels to the board
+        displayOptionPanel();
         drawBoard();
         displayBoard();
-        displayOptionPanel();
-
     }
 
     public void displayOptionPanel() {
-        // This lays out the quit button. I want to reposition the quit button.
+
+        // This lays out the options buttons.
         optionsPanel = new JPanel();
+        optionsPanel.setLayout(new GridLayout(6, 1));
+
+
+        xWinsCount = 0;
+        oWinsCount = 0;
+        turn = new JLabel("'s Turn");
+        xWins = new JLabel("X wins: " + xWinsCount);
+        oWins = new JLabel("O wins: " + oWinsCount);
+
+        optionsPanel.add(turn);
+        optionsPanel.add(xWins);
+        optionsPanel.add(oWins);
+
         quitButton = new JButton("EXIT");
         resetButton = new JButton("RESET");
         undoButton = new JButton("UNDO");
@@ -73,11 +84,13 @@ public class SuperTicTacToePanel extends JPanel {
         quitButton.addActionListener(oListen);
         resetButton.addActionListener(oListen);
         undoButton.addActionListener(oListen);
-        optionsPanel.add(quitButton);
-        optionsPanel.add(resetButton);
-        optionsPanel.add(undoButton);
 
-        add(optionsPanel, BorderLayout.PAGE_START);
+        optionsPanel.add(undoButton);
+        optionsPanel.add(resetButton);
+        optionsPanel.add(quitButton);
+
+
+        add(optionsPanel, BorderLayout.EAST);
     }
 
     public static int getCountToWin() {
@@ -107,12 +120,7 @@ public class SuperTicTacToePanel extends JPanel {
 
             }
         }
-        // copy the previous display
-//        for (int row = 0; row < boardSize; row++) {
-//            for (int col = 0; col < boardSize; col++) {
-//                previousBoard[row][col] = board[row][col];
-//            }
-//        }
+        setTurnText();
     }
 
     // adds/sets the icons on the board
@@ -142,31 +150,31 @@ public class SuperTicTacToePanel extends JPanel {
 
         public void actionPerformed(ActionEvent event) {
 
-
-
             // Finds selected button
             for (int row = 0; row < boardSize; row++) {
                 for (int col = 0; col < boardSize; col++) {
                     if (board[row][col] == event.getSource()) {
                         game.select(row, col);
-
                         game.setUndoCol(col);
                         game.setUndoRows(row);
-                        game.undoIndex++;
+                        game.incUndoIndex();
                     }
                 }
 
             }
             // refreshes board
             displayBoard();
+            setTurnText();
 
             if (game.getGameStatus() == GameStatus.O_WON) {
                 JOptionPane.showMessageDialog(null, "O won and X lost!" + "\nThe game will now reset");
+                oWinsCount++;
                 game.Reset();
                 displayBoard();
             }
             if (game.getGameStatus() == GameStatus.X_WON) {
                 JOptionPane.showMessageDialog(null, "X won and 0 lost!" + "\nThe game will now reset");
+                xWinsCount++;
                 game.Reset();
                 displayBoard();
             }
@@ -176,10 +184,13 @@ public class SuperTicTacToePanel extends JPanel {
                 displayBoard();
             }
 
+            xWins.setText("X wins: " + xWinsCount);
+            oWins.setText("O Wins: " + oWinsCount);
+
         }
     }
 
-    // Pop up menu for when the quit button is pressed
+    // Pop up menu for when the one of the buttons is pressed
     // yes or no option
     private class optionsListener implements ActionListener {
 
@@ -189,10 +200,8 @@ public class SuperTicTacToePanel extends JPanel {
                         JOptionPane.YES_NO_OPTION);
 
                 if (exit == JOptionPane.YES_OPTION) {
-
                     System.exit(0);
                 }
-
             }
             if(event.getSource() == resetButton){
                 int reset = JOptionPane.showConfirmDialog(null, "Are you sure you want to reset?", "Reset",
@@ -204,9 +213,17 @@ public class SuperTicTacToePanel extends JPanel {
                 }
             }
             if(event.getSource() == undoButton){
-                game.undo();
+
+                if(game.undo()) setTurnText();
                 displayBoard();
             }
         }
+    }
+
+    public void setTurnText(){
+
+        if(game.isxTurn()) turn.setText("X's Turn");
+
+        else turn.setText("O's Turn");
     }
 }
