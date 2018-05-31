@@ -1,14 +1,6 @@
 package sttc;
 
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
-
-
 
 public class SuperTicTacToe {
 
@@ -22,7 +14,6 @@ public class SuperTicTacToe {
 
     public static void setupPanel(){
 
-        //Object jbutton;
         TicTacToe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         SuperTicTacToePanel panel = new SuperTicTacToePanel();
         TicTacToe.getContentPane().add(panel);
