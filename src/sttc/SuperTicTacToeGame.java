@@ -27,46 +27,109 @@ public class SuperTicTacToeGame {
 
     public void setupGame(){
 
-        //String to select board size
-        this.sizeSelect =JOptionPane.showInputDialog(null, "Enter a board size between 3 and 9: ");
-        boardLength = Integer.parseInt(sizeSelect);
+        do{
+            //String to select board size
+            this.sizeSelect = JOptionPane.showInputDialog(null, "Enter a board size between 3 and 9: ");
 
-        while(boardLength < 3 || boardLength > 9){
-            JOptionPane.showMessageDialog(null, "Invalid input");
-            this.sizeSelect =JOptionPane.showInputDialog(null,"Enter a board size between 3 and 9: ");
+            //if the user hits cancel, quit
+            if(sizeSelect == null){
+                System.exit(0);
+            }
+
+            //check if input string contains a character or a white space, if so make string empty
+            for(int i = 0; i < sizeSelect.length(); i++){
+                char c = sizeSelect.charAt(i);
+                if(Character.isLetter(c) || Character.isWhitespace(c)){
+                    sizeSelect = "";
+                    break;
+                }
+            }
+
+            //check if string is empty, if so make input = -1
+            if("".equals(sizeSelect)){
+                sizeSelect = "-1";
+            }
+
+            //cast string into an integer
             boardLength = Integer.parseInt(sizeSelect);
-        }
+
+            //if input out of bounds, show error message
+            if(boardLength < 3 || boardLength > 9){
+                JOptionPane.showMessageDialog(null, "Invalid input, try again");
+            }
+
+        }while(boardLength < 3 || boardLength > 9);
+
+        //set board size from user input
         SuperTicTacToePanel.setBoardSize(boardLength);
 
-        //enter the amount of connections needed to win between 3 and boardSize
-        this.connections =JOptionPane.showInputDialog(null, "Enter a connections to win between 2 and " + boardLength + " : ");
-        this.connecter = Integer.parseInt(connections);
+        do{
 
-        while(connecter < 2 || connecter > boardLength){
-            JOptionPane.showMessageDialog(null, "Invalid input");
+            //enter the amount of connections needed to win between 3 and boardSize
             this.connections =JOptionPane.showInputDialog(null, "Enter a connections to win between 2 and " + boardLength + " : ");
+
+            //if the user hits cancel, quit
+            if(connections == null){
+                System.exit(0);
+            }
+
+            //check if input string contains a character or a white space, if so make string empty
+            for(int i = 0; i < connections.length(); i++){
+                char c = connections.charAt(i);
+                if(Character.isLetter(c) || Character.isWhitespace(c)){
+                    connections = "";
+                    break;
+                }
+            }
+
+            //check if string is empty, if so make input = -1
+            if("".equals(connections)){
+                connections = "-1";
+            }
+
+            //cast string into an integer
             this.connecter = Integer.parseInt(connections);
-        }
+
+            //if input out of bounds, show error message
+            if(connecter < 3 || connecter > boardLength){
+                JOptionPane.showMessageDialog(null, "Invalid input, try again");
+            }
+
+
+        }while(connecter < 2 || connecter > boardLength);
+
+        //set connections required from user input
         SuperTicTacToePanel.setCountToWin(this.connecter);
 
 
         //Ask if X should go first (player select)
-        turn = JOptionPane.showConfirmDialog(null, "Do you want X to start?", "SELECTPLAYER", JOptionPane.YES_NO_OPTION);
+        turn = JOptionPane.showConfirmDialog(null, "Do you want X to start?", "SELECT PLAYER", JOptionPane.YES_NO_OPTION);
+
+        //Save user choice
         if (turn == JOptionPane.YES_OPTION) {
+
+            //if user chose yes
             this.xTurn = true;
+
             //Saves choice
             this.rememberChoice = true;
         }else {
+
+            //if user chose no
             this.xTurn = false;
+
             //Saves choice
             this.rememberChoice = false;
         }
+
         //Sets default Status (See GameStatus.Java)
         status = GameStatus.IN_PROGRESS;
 
         //sets size of cell status and sets everything to empty
         //Status can contain (X,O, or empty) (See CellStatus.java)
         board = new CellStatus[SuperTicTacToePanel.getBoardSize()][SuperTicTacToePanel.getBoardSize()];
+
+        //make all cells empty
         for (int row = 0; row < SuperTicTacToePanel.getBoardSize();  row++) {
             for (int col = 0; col < SuperTicTacToePanel.getBoardSize(); col++) {
                 board[row][col] = CellStatus.EMPTY;
