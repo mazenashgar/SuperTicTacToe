@@ -142,6 +142,12 @@ public class SuperTicTacToePanel extends JPanel {
                 }
             }
         }
+
+        if(game.getUndoIndex() > 0){
+            undoButton.setEnabled(true);
+        }else{
+            undoButton.setEnabled(false);
+        }
     }
 
     // Listens to button from tic-tac-toe board
@@ -162,6 +168,7 @@ public class SuperTicTacToePanel extends JPanel {
                 }
 
             }
+
             // refreshes board
             displayBoard();
             setTurnText();
@@ -169,23 +176,25 @@ public class SuperTicTacToePanel extends JPanel {
             if (game.getGameStatus() == GameStatus.O_WON) {
                 JOptionPane.showMessageDialog(null, "O won and X lost!" + "\nThe game will now reset");
                 oWinsCount++;
+                updateScore();
                 game.Reset();
                 displayBoard();
             }
             if (game.getGameStatus() == GameStatus.X_WON) {
                 JOptionPane.showMessageDialog(null, "X won and 0 lost!" + "\nThe game will now reset");
                 xWinsCount++;
+                updateScore();
                 game.Reset();
                 displayBoard();
             }
             if (game.getGameStatus() == GameStatus.CATS) {
                 JOptionPane.showMessageDialog(null, "Cats game" + "\nThe game" + " will now reset");
+                updateScore();
                 game.Reset();
                 displayBoard();
             }
 
-            xWins.setText("X wins: " + xWinsCount);
-            oWins.setText("O Wins: " + oWinsCount);
+            updateScore();
 
         }
     }
@@ -225,5 +234,11 @@ public class SuperTicTacToePanel extends JPanel {
         if(game.isxTurn()) turn.setText("X's Turn");
 
         else turn.setText("O's Turn");
+    }
+
+    public void updateScore(){
+
+        xWins.setText("X wins: " + xWinsCount);
+        oWins.setText("O Wins: " + oWinsCount);
     }
 }
