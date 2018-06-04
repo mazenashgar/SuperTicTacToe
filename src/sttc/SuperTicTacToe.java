@@ -11,7 +11,6 @@ public class SuperTicTacToe {
     public static void main(String[] args) {
 
         setupPanel();
-
     }
 
     public static void setupPanel(){

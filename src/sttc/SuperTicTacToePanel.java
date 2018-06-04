@@ -3,7 +3,6 @@ package sttc;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 
 import javax.swing.*;
 
@@ -12,13 +11,13 @@ public class SuperTicTacToePanel extends JPanel {
 
     private static JButton[][] board;
 
-    private CellStatus iCell;
     private JButton quitButton;
     private JButton resetButton;
     private JButton undoButton;
-    private ImageIcon oIcon;
+
     private SuperTicTacToeGame game;
     private ImageIcon xIcon;
+    private ImageIcon oIcon;
     private ImageIcon emptyIcon;
     private JPanel superPanel;
 
@@ -44,7 +43,6 @@ public class SuperTicTacToePanel extends JPanel {
         xIcon = new ImageIcon(getClass().getResource(("x.jpg")));
         oIcon = new ImageIcon(getClass().getResource(("o.jpg")));
         emptyIcon = new ImageIcon(getClass().getResource(("e.jpg")));
-
 
         // This is the game panel setup
         superPanel = new JPanel();
@@ -143,7 +141,11 @@ public class SuperTicTacToePanel extends JPanel {
             }
         }
 
-        if(game.getUndoIndex() > 0){
+        for(int i = 0; i < boardSize*boardSize; i++){
+            board[game.getHighlightRows(i)][game.getHighlightCol(i)].setOpaque(false);
+        }
+
+        if(game.getUndoIndex() > 1){
             undoButton.setEnabled(true);
         }else{
             undoButton.setEnabled(false);
@@ -152,7 +154,7 @@ public class SuperTicTacToePanel extends JPanel {
 
     // Listens to button from tic-tac-toe board
     private class ButtonListener implements ActionListener {
-        //int boardSize = SuperTicTacToePanel.getBoardSize();
+
 
         public void actionPerformed(ActionEvent event) {
 
@@ -161,19 +163,40 @@ public class SuperTicTacToePanel extends JPanel {
                 for (int col = 0; col < boardSize; col++) {
                     if (board[row][col] == event.getSource()) {
                         game.select(row, col);
-                        game.setUndoCol(col);
-                        game.setUndoRows(row);
-                        game.incUndoIndex();
+
+                        //If O is AI
+                        if (game.isRememberChoice() ){
+                            if(!game.canIwin()) {
+                                if(!game.canIBlock()) {
+                                    game.randomMove();
+                                }
+                            }
+                        }else {
+                            //If X is AI
+                            if(!game.canIBlock()) {
+                                if(!game.canIwin()) {
+                                    game.randomMove();
+                                }
+                            }
+                        }
                     }
                 }
-
             }
 
             // refreshes board
             displayBoard();
             setTurnText();
 
+            if(game.isHighlightNeeded()) {
+                for (int i = 0; i < countToWin-3; i++) {
+
+                    board[game.getHighlightRows(i)][game.getHighlightCol(i)].setBackground(Color.green);
+                    board[game.getHighlightRows(i)][game.getHighlightCol(i)].setOpaque(true);
+                }
+            }
+
             if (game.getGameStatus() == GameStatus.O_WON) {
+                highlightBoard();
                 JOptionPane.showMessageDialog(null, "O won and X lost!" + "\nThe game will now reset");
                 oWinsCount++;
                 updateScore();
@@ -181,6 +204,7 @@ public class SuperTicTacToePanel extends JPanel {
                 displayBoard();
             }
             if (game.getGameStatus() == GameStatus.X_WON) {
+                highlightBoard();
                 JOptionPane.showMessageDialog(null, "X won and 0 lost!" + "\nThe game will now reset");
                 xWinsCount++;
                 updateScore();
@@ -195,7 +219,6 @@ public class SuperTicTacToePanel extends JPanel {
             }
 
             updateScore();
-
         }
     }
 
@@ -240,5 +263,14 @@ public class SuperTicTacToePanel extends JPanel {
 
         xWins.setText("X wins: " + xWinsCount);
         oWins.setText("O Wins: " + oWinsCount);
+    }
+
+    public void highlightBoard(){
+        if(game.isHighlightNeeded()) {
+            for (int i = 0; i < countToWin; i++) {
+                board[game.getHighlightRows(i)][game.getHighlightCol(i)].setBackground(Color.green);
+                board[game.getHighlightRows(i)][game.getHighlightCol(i)].setOpaque(true);
+            }
+        }
     }
 }
