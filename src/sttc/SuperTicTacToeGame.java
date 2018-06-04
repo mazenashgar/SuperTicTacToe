@@ -145,8 +145,8 @@ public class SuperTicTacToeGame {
         undoIndex = 0;
 
         //instantiate 2 arrays to highlight the winning sequence and a counter
-        highlightCol = new int [ 100];
-        highlightRows = new int [ 100];
+        highlightCol = new int [100];
+        highlightRows = new int [100];
         highlightIndex = 0;
         highlightNeeded = false;
     }
@@ -181,7 +181,6 @@ public class SuperTicTacToeGame {
             }
         }
         undoIndex = 0;
-
         highlightNeeded = false;
     }
 
