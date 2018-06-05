@@ -446,8 +446,6 @@ public class SuperTicTacToeGame {
         return board[row][col];
     }
 
-    //A placeholder method till I design a strategy
-    // Probably still useful afterwards
     public void randomMove() {
 
         //stops the game from making a move if the game is over
@@ -496,8 +494,6 @@ public class SuperTicTacToeGame {
         }
     }
 
-    // Checks if AI player can win
-    //Right now the AI player is O
     public boolean canIwin() {
 
         int countToWin = SuperTicTacToePanel.getCountToWin();
@@ -507,6 +503,7 @@ public class SuperTicTacToeGame {
         if(getGameStatus() == GameStatus.X_WON) {
             return false;
         }
+
         //checks for 2 connections in row when the first cellstatus is O
         if(countToWin == 2) {
             for (int rows = 0; rows < boardSize; rows++) {
@@ -521,7 +518,7 @@ public class SuperTicTacToeGame {
 
                         }else if(cols + 1 == boardSize) {
                             if(getCell(rows, 0) == CellStatus.EMPTY) {
-                                select(rows, 0 );
+                                select(rows, 0);
                                 return true;
                             }
                         }
@@ -531,17 +528,17 @@ public class SuperTicTacToeGame {
                                 select(rows+1, cols);
                                 return true;
                             }
-
                         }else if(rows + 1 == boardSize) {
                             if(getCell(0, cols) == CellStatus.EMPTY) {
                                 select(0, cols);
+                                return true;
                             }
                         }
                     }
-
                 }
             }
         }
+
         //Checks for 2 connections in rows and columns consecutive starting with an empty space
         if(countToWin == 2) {
             for (int rows = 0; rows < boardSize; rows++) {
@@ -568,13 +565,14 @@ public class SuperTicTacToeGame {
                         }else if(rows + 1 == boardSize) {
                             if(getCell(0, cols) == CellStatus.O) {
                                 select(rows, cols);
+                                return true;
                             }
                         }
                     }
-
                 }
             }
         }
+
         //Checks consecutive rows with 3 or more starting with cellStatus O
         if(countToWin >=3) {
             for (int rows = 0; rows < boardSize; rows++) {
@@ -665,7 +663,6 @@ public class SuperTicTacToeGame {
                         int empCol = cols;
 
 
-
                         for(int i=1; i<countToWin; i++ ) {
                             if (rows + i < boardSize) {
                                 if (getCell(rows+i, cols) == CellStatus.O) {
@@ -737,8 +734,6 @@ public class SuperTicTacToeGame {
                                     }
 
                                 }
-
-
                             }
                         }
                     }
@@ -793,10 +788,7 @@ public class SuperTicTacToeGame {
                                         select(empRow, empCol);
                                         return true;
                                     }
-
                                 }
-
-
                             }
                         }
                     }
@@ -818,7 +810,6 @@ public class SuperTicTacToeGame {
                             if (rows + i < boardSize) {
                                 if (getCell(rows+i, cols) == CellStatus.O) {
                                     countO++;
-
                                 }
                                 if (getCell(rows+i, cols) == CellStatus.EMPTY) {
                                     //saves location of empty space
@@ -850,19 +841,16 @@ public class SuperTicTacToeGame {
                                         select(empRow, empCol);
                                         return true;
                                     }
-
                                 }
-
-
                             }
                         }
                     }
                 }
-
             }
         }
         return false;
     }
+
     public boolean canIBlock() {
 
         int countToWin = SuperTicTacToePanel.getCountToWin();
@@ -898,13 +886,14 @@ public class SuperTicTacToeGame {
                         }else if(rows + 1 == boardSize) {
                             if(getCell(0, cols) == CellStatus.EMPTY) {
                                 select(0, cols);
+                                return true;
                             }
                         }
                     }
-
                 }
             }
         }
+
         //can I win for 2 checks rows and columns consecutive
         if(countToWin == 2) {
             for (int rows = 0; rows < boardSize; rows++) {
@@ -927,17 +916,17 @@ public class SuperTicTacToeGame {
                                 select(rows, cols);
                                 return true;
                             }
-
                         }else if(rows + 1 == boardSize) {
                             if(getCell(0, cols) == CellStatus.X) {
                                 select(rows, cols);
+                                return true;
                             }
                         }
                     }
-
                 }
             }
         }
+
         //blocks consecutive rows
         if(countToWin >=3) {
             for (int rows = 0; rows < boardSize; rows++) {
@@ -968,15 +957,11 @@ public class SuperTicTacToeGame {
                                         select(rows, firstCol );
                                         return true;
                                     }
-
                                 }
-
-
                             }
                         }
                     }
                 }
-
             }
         }
         //blocks  rows starting with an empty then consecutive
@@ -1014,15 +999,11 @@ public class SuperTicTacToeGame {
                                         select(empRow, empCol );
                                         return true;
                                     }
-
                                 }
-
-
                             }
                         }
                     }
                 }
-
             }
         }
         //blocks cols starting with an empty then consecutive
@@ -1035,13 +1016,10 @@ public class SuperTicTacToeGame {
                         int empRow = rows;
                         int empCol = cols;
 
-
-
                         for(int i=1; i<countToWin; i++ ) {
                             if (rows + i < boardSize) {
                                 if (getCell(rows+i, cols) == CellStatus.X) {
                                     countX++;
-
                                 }
                             }else if (rows+i >= boardSize) {
                                 if (getCell(firstRow, cols ) == CellStatus.X) {
@@ -1060,15 +1038,11 @@ public class SuperTicTacToeGame {
                                         select(empRow, empCol );
                                         return true;
                                     }
-
                                 }
-
-
                             }
                         }
                     }
                 }
-
             }
         }
         //blocks unconsecutive rows
@@ -1085,7 +1059,6 @@ public class SuperTicTacToeGame {
                             if (cols + i < boardSize) {
                                 if (getCell(rows, cols+i) == CellStatus.X) {
                                     countX++;
-
                                 }
                                 if (getCell(rows, cols+i) == CellStatus.EMPTY) {
                                     countEmpty++;
@@ -1116,15 +1089,11 @@ public class SuperTicTacToeGame {
                                         select(empRow, empCol);
                                         return true;
                                     }
-
                                 }
-
-
                             }
                         }
                     }
                 }
-
             }
         }
 
@@ -1139,7 +1108,6 @@ public class SuperTicTacToeGame {
                             if (rows + i < boardSize) {
                                 if (getCell(rows+i, cols) == CellStatus.X) {
                                     countO++;
-
                                 }
                             }else if (rows+i >= boardSize) {
                                 if (getCell(firstRow, cols) == CellStatus.X) {
@@ -1158,17 +1126,12 @@ public class SuperTicTacToeGame {
                                         select( firstRow, cols );
                                         return true;
                                     }
-
                                 }
-
-
                             }
                         }
                     }
                 }
-
             }
-
         }
         //blocks unconsecutive columns
         if(countToWin >=3) {
@@ -1184,7 +1147,6 @@ public class SuperTicTacToeGame {
                             if (rows + i < boardSize) {
                                 if (getCell(rows+i, cols) == CellStatus.X) {
                                     countX++;
-
                                 }
                                 if (getCell(rows+i, cols) == CellStatus.EMPTY) {
                                     countEmpty++;
@@ -1215,13 +1177,11 @@ public class SuperTicTacToeGame {
                                         select(empRow, empCol);
                                         return true;
                                     }
-
                                 }
                             }
                         }
                     }
                 }
-
             }
         }
         return false;

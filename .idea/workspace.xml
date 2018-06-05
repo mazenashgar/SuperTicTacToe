@@ -2,11 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="25d61992-6d20-4912-89ac-7bfce366ebf7" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/SuperTicTacToe/sttc/SuperTicTacToeGame.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/SuperTicTacToe/sttc/SuperTicTacToeGame.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/SuperTicTacToe/sttc/SuperTicTacToePanel.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/SuperTicTacToe/sttc/SuperTicTacToePanel.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/sttc/SuperTicTacToeGame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/sttc/SuperTicTacToeGame.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/sttc/SuperTicTacToePanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/sttc/SuperTicTacToePanel.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -36,19 +32,30 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="SuperTicTacToeGame.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="SuperTicTacToeGame.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/sttc/SuperTicTacToeGame.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-6702">
-              <caret line="517" column="51" lean-forward="true" selection-start-line="517" selection-start-column="51" selection-end-line="517" selection-end-column="51" />
+            <state relative-caret-position="408">
+              <caret line="853" column="31" selection-start-line="853" selection-start-column="31" selection-end-line="853" selection-end-column="31" />
               <folding>
-                <element signature="imports" expanded="true" />
+                <element signature="method#SuperTicTacToeGame#0;class#SuperTicTacToeGame#0" />
+                <element signature="method#setupGame#0;class#SuperTicTacToeGame#0" />
+                <element signature="e#4199#4254#0" />
+                <element signature="method#select#0;class#SuperTicTacToeGame#0" />
+                <element signature="method#Reset#0;class#SuperTicTacToeGame#0" />
+                <element signature="method#getGameStatus#0;class#SuperTicTacToeGame#0" />
+                <element signature="e#6850#6907#0" />
+                <element signature="method#undo#0;class#SuperTicTacToeGame#0" />
+                <element signature="method#randomMove#0;class#SuperTicTacToeGame#0" />
+                <element signature="method#canIwin#0;class#SuperTicTacToeGame#0" />
+                <element signature="e#29025#29088#0" />
+                <element signature="method#canIBlock#0;class#SuperTicTacToeGame#0" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="SuperTicTacToePanel.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="SuperTicTacToePanel.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/sttc/SuperTicTacToePanel.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="568">
@@ -339,7 +346,7 @@
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info id="UI Designer" order="2" />
       <window_info anchor="right" id="Theme Preview" order="3" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.28267047" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.28208557" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -392,7 +399,7 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="35" />
+      <option name="time" value="41" />
     </breakpoint-manager>
   </component>
   <component name="debuggerHistoryManager">
@@ -422,7 +429,18 @@
         <state relative-caret-position="5265">
           <caret line="351" column="21" lean-forward="true" selection-end-line="1183" />
           <folding>
-            <element signature="imports" expanded="true" />
+            <element signature="method#SuperTicTacToeGame#0;class#SuperTicTacToeGame#0" />
+            <element signature="method#setupGame#0;class#SuperTicTacToeGame#0" />
+            <element signature="e#4199#4254#0" />
+            <element signature="method#select#0;class#SuperTicTacToeGame#0" />
+            <element signature="method#Reset#0;class#SuperTicTacToeGame#0" />
+            <element signature="method#getGameStatus#0;class#SuperTicTacToeGame#0" />
+            <element signature="e#6850#6907#0" />
+            <element signature="method#undo#0;class#SuperTicTacToeGame#0" />
+            <element signature="method#randomMove#0;class#SuperTicTacToeGame#0" />
+            <element signature="method#canIwin#0;class#SuperTicTacToeGame#0" />
+            <element signature="e#29025#29088#0" />
+            <element signature="method#canIBlock#0;class#SuperTicTacToeGame#0" />
           </folding>
         </state>
       </provider>
@@ -449,7 +467,18 @@
         <state relative-caret-position="3240">
           <caret line="216" column="60" selection-start-line="216" selection-start-column="60" selection-end-line="216" selection-end-column="60" />
           <folding>
-            <element signature="imports" expanded="true" />
+            <element signature="method#SuperTicTacToeGame#0;class#SuperTicTacToeGame#0" />
+            <element signature="method#setupGame#0;class#SuperTicTacToeGame#0" />
+            <element signature="e#4199#4254#0" />
+            <element signature="method#select#0;class#SuperTicTacToeGame#0" />
+            <element signature="method#Reset#0;class#SuperTicTacToeGame#0" />
+            <element signature="method#getGameStatus#0;class#SuperTicTacToeGame#0" />
+            <element signature="e#6850#6907#0" />
+            <element signature="method#undo#0;class#SuperTicTacToeGame#0" />
+            <element signature="method#randomMove#0;class#SuperTicTacToeGame#0" />
+            <element signature="method#canIwin#0;class#SuperTicTacToeGame#0" />
+            <element signature="e#29025#29088#0" />
+            <element signature="method#canIBlock#0;class#SuperTicTacToeGame#0" />
           </folding>
         </state>
       </provider>
@@ -476,7 +505,18 @@
         <state relative-caret-position="4770">
           <caret line="318" column="9" lean-forward="true" selection-start-line="318" selection-start-column="9" selection-end-line="318" selection-end-column="9" />
           <folding>
-            <element signature="imports" expanded="true" />
+            <element signature="method#SuperTicTacToeGame#0;class#SuperTicTacToeGame#0" />
+            <element signature="method#setupGame#0;class#SuperTicTacToeGame#0" />
+            <element signature="e#4199#4254#0" />
+            <element signature="method#select#0;class#SuperTicTacToeGame#0" />
+            <element signature="method#Reset#0;class#SuperTicTacToeGame#0" />
+            <element signature="method#getGameStatus#0;class#SuperTicTacToeGame#0" />
+            <element signature="e#6850#6907#0" />
+            <element signature="method#undo#0;class#SuperTicTacToeGame#0" />
+            <element signature="method#randomMove#0;class#SuperTicTacToeGame#0" />
+            <element signature="method#canIwin#0;class#SuperTicTacToeGame#0" />
+            <element signature="e#29025#29088#0" />
+            <element signature="method#canIBlock#0;class#SuperTicTacToeGame#0" />
           </folding>
         </state>
       </provider>
@@ -503,7 +543,18 @@
         <state relative-caret-position="4500">
           <caret line="300" column="21" lean-forward="true" selection-start-line="300" selection-start-column="21" selection-end-line="300" selection-end-column="21" />
           <folding>
-            <element signature="imports" expanded="true" />
+            <element signature="method#SuperTicTacToeGame#0;class#SuperTicTacToeGame#0" />
+            <element signature="method#setupGame#0;class#SuperTicTacToeGame#0" />
+            <element signature="e#4199#4254#0" />
+            <element signature="method#select#0;class#SuperTicTacToeGame#0" />
+            <element signature="method#Reset#0;class#SuperTicTacToeGame#0" />
+            <element signature="method#getGameStatus#0;class#SuperTicTacToeGame#0" />
+            <element signature="e#6850#6907#0" />
+            <element signature="method#undo#0;class#SuperTicTacToeGame#0" />
+            <element signature="method#randomMove#0;class#SuperTicTacToeGame#0" />
+            <element signature="method#canIwin#0;class#SuperTicTacToeGame#0" />
+            <element signature="e#29025#29088#0" />
+            <element signature="method#canIBlock#0;class#SuperTicTacToeGame#0" />
           </folding>
         </state>
       </provider>
@@ -530,7 +581,18 @@
         <state relative-caret-position="4800">
           <caret line="320" lean-forward="true" selection-start-line="320" selection-end-line="320" />
           <folding>
-            <element signature="imports" expanded="true" />
+            <element signature="method#SuperTicTacToeGame#0;class#SuperTicTacToeGame#0" />
+            <element signature="method#setupGame#0;class#SuperTicTacToeGame#0" />
+            <element signature="e#4199#4254#0" />
+            <element signature="method#select#0;class#SuperTicTacToeGame#0" />
+            <element signature="method#Reset#0;class#SuperTicTacToeGame#0" />
+            <element signature="method#getGameStatus#0;class#SuperTicTacToeGame#0" />
+            <element signature="e#6850#6907#0" />
+            <element signature="method#undo#0;class#SuperTicTacToeGame#0" />
+            <element signature="method#randomMove#0;class#SuperTicTacToeGame#0" />
+            <element signature="method#canIwin#0;class#SuperTicTacToeGame#0" />
+            <element signature="e#29025#29088#0" />
+            <element signature="method#canIBlock#0;class#SuperTicTacToeGame#0" />
           </folding>
         </state>
       </provider>
@@ -564,7 +626,18 @@
         <state relative-caret-position="825">
           <caret line="55" column="9" selection-start-line="55" selection-start-column="9" selection-end-line="55" selection-end-column="9" />
           <folding>
-            <element signature="imports" expanded="true" />
+            <element signature="method#SuperTicTacToeGame#0;class#SuperTicTacToeGame#0" />
+            <element signature="method#setupGame#0;class#SuperTicTacToeGame#0" />
+            <element signature="e#4199#4254#0" />
+            <element signature="method#select#0;class#SuperTicTacToeGame#0" />
+            <element signature="method#Reset#0;class#SuperTicTacToeGame#0" />
+            <element signature="method#getGameStatus#0;class#SuperTicTacToeGame#0" />
+            <element signature="e#6850#6907#0" />
+            <element signature="method#undo#0;class#SuperTicTacToeGame#0" />
+            <element signature="method#randomMove#0;class#SuperTicTacToeGame#0" />
+            <element signature="method#canIwin#0;class#SuperTicTacToeGame#0" />
+            <element signature="e#29025#29088#0" />
+            <element signature="method#canIBlock#0;class#SuperTicTacToeGame#0" />
           </folding>
         </state>
       </provider>
@@ -629,7 +702,18 @@
         <state relative-caret-position="480">
           <caret line="32" column="9" lean-forward="true" selection-start-line="32" selection-start-column="9" selection-end-line="32" selection-end-column="9" />
           <folding>
-            <element signature="imports" expanded="true" />
+            <element signature="method#SuperTicTacToeGame#0;class#SuperTicTacToeGame#0" />
+            <element signature="method#setupGame#0;class#SuperTicTacToeGame#0" />
+            <element signature="e#4199#4254#0" />
+            <element signature="method#select#0;class#SuperTicTacToeGame#0" />
+            <element signature="method#Reset#0;class#SuperTicTacToeGame#0" />
+            <element signature="method#getGameStatus#0;class#SuperTicTacToeGame#0" />
+            <element signature="e#6850#6907#0" />
+            <element signature="method#undo#0;class#SuperTicTacToeGame#0" />
+            <element signature="method#randomMove#0;class#SuperTicTacToeGame#0" />
+            <element signature="method#canIwin#0;class#SuperTicTacToeGame#0" />
+            <element signature="e#29025#29088#0" />
+            <element signature="method#canIBlock#0;class#SuperTicTacToeGame#0" />
           </folding>
         </state>
       </provider>
@@ -779,6 +863,16 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/sttc/SuperTicTacToePanel.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="568">
+          <caret line="272" column="46" selection-start-line="272" selection-start-column="46" selection-end-line="272" selection-end-column="46" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/sttc/SuperTicTacToe.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="60">
@@ -788,20 +882,21 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/sttc/SuperTicTacToeGame.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-6702">
-          <caret line="517" column="51" lean-forward="true" selection-start-line="517" selection-start-column="51" selection-end-line="517" selection-end-column="51" />
+        <state relative-caret-position="408">
+          <caret line="853" column="31" selection-start-line="853" selection-start-column="31" selection-end-line="853" selection-end-column="31" />
           <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/sttc/SuperTicTacToePanel.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="568">
-          <caret line="272" column="46" selection-start-line="272" selection-start-column="46" selection-end-line="272" selection-end-column="46" />
-          <folding>
-            <element signature="imports" expanded="true" />
+            <element signature="method#SuperTicTacToeGame#0;class#SuperTicTacToeGame#0" />
+            <element signature="method#setupGame#0;class#SuperTicTacToeGame#0" />
+            <element signature="e#4199#4254#0" />
+            <element signature="method#select#0;class#SuperTicTacToeGame#0" />
+            <element signature="method#Reset#0;class#SuperTicTacToeGame#0" />
+            <element signature="method#getGameStatus#0;class#SuperTicTacToeGame#0" />
+            <element signature="e#6850#6907#0" />
+            <element signature="method#undo#0;class#SuperTicTacToeGame#0" />
+            <element signature="method#randomMove#0;class#SuperTicTacToeGame#0" />
+            <element signature="method#canIwin#0;class#SuperTicTacToeGame#0" />
+            <element signature="e#29025#29088#0" />
+            <element signature="method#canIBlock#0;class#SuperTicTacToeGame#0" />
           </folding>
         </state>
       </provider>
