@@ -145,8 +145,8 @@ public class SuperTicTacToeGame {
         undoIndex = 0;
 
         //instantiate 2 arrays to highlight the winning sequence and a counter
-        highlightCol = new int [100];
-        highlightRows = new int [100];
+        highlightCol = new int [boardLength * boardLength];
+        highlightRows = new int [boardLength * boardLength];
         highlightIndex = 0;
         highlightNeeded = false;
     }
@@ -323,7 +323,7 @@ public class SuperTicTacToeGame {
                             if (getCell(rows, firstCol) == CellStatus.O) {
                                 countO++;
                                 highlightRows[i] = rows;
-                                highlightCol[i]= firstCol+i;
+                                highlightCol[i]= firstCol;
 
                             }
                             firstCol++;
@@ -515,7 +515,7 @@ public class SuperTicTacToeGame {
                         //checks for rows
                         if (cols + 1 < boardSize) {
                             if (getCell(rows, cols+1) == CellStatus.EMPTY) {
-                                select(rows, cols+1 );
+                                select(rows, cols+1);
                                 return true;
                             }
 

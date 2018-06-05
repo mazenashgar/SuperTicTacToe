@@ -141,8 +141,10 @@ public class SuperTicTacToePanel extends JPanel {
             }
         }
 
-        for(int i = 0; i < boardSize*boardSize; i++){
-            board[game.getHighlightRows(i)][game.getHighlightCol(i)].setOpaque(false);
+        for(int i = 0; i < boardSize + 1; i++){
+            for(int j = 0; j <boardSize + 1; j++) {
+                board[game.getHighlightRows(i)][game.getHighlightCol(j)].setOpaque(false);
+            }
         }
 
         if(game.getUndoIndex() > 1){
@@ -268,8 +270,10 @@ public class SuperTicTacToePanel extends JPanel {
     public void highlightBoard(){
         if(game.isHighlightNeeded()) {
             for (int i = 0; i < countToWin; i++) {
-                board[game.getHighlightRows(i)][game.getHighlightCol(i)].setBackground(Color.green);
-                board[game.getHighlightRows(i)][game.getHighlightCol(i)].setOpaque(true);
+                for(int j = 0; j < countToWin ; j++) {
+                    board[game.getHighlightRows(i)][game.getHighlightCol(j)].setBackground(Color.green);
+                    board[game.getHighlightRows(i)][game.getHighlightCol(j)].setOpaque(true);
+                }
             }
         }
     }
