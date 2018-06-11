@@ -15,8 +15,10 @@ public class SuperTicTacToeGame {
 
     private int [] highlightRows;
     private int [] highlightCol;
-    private int highlightIndex;
     private boolean highlightNeeded;
+
+    private int [] smartMoveRow;
+    private int [] smartMoveCol;
 
 
     private GameStatus status;
@@ -25,7 +27,7 @@ public class SuperTicTacToeGame {
     private int connecter;
     private int boardLength;
     private int turn;
-    private int positionRow [];
+    private int [] positionRow ;
     private int [] positionCol;
     private Random randMove;
 
@@ -147,7 +149,6 @@ public class SuperTicTacToeGame {
         //instantiate 2 arrays to highlight the winning sequence and a counter
         highlightCol = new int [boardLength * boardLength];
         highlightRows = new int [boardLength * boardLength];
-        highlightIndex = 0;
         highlightNeeded = false;
     }
 
@@ -184,73 +185,83 @@ public class SuperTicTacToeGame {
         highlightNeeded = false;
     }
 
+    /******************************************************************
+     * This method checks the condition of the game and returns the
+     * current status of the game. If X, O win or tie it will return
+     * the winner. If not it will return in progress.
+     *
+     * @return GameStatus used to determine if the
+     * game  has a winner or if the game is still in progress
+     *****************************************************************/
     public GameStatus getGameStatus() {
 
-        // checks game status
+        //Sets initial status to IN_Progress
         status = GameStatus.IN_PROGRESS;
 
-        // gets integers from STTPanel
+        // retrieves integers countToWin and boardSize from SuperTicTacToePanel
         int countToWin = SuperTicTacToePanel.getCountToWin();
         int boardSize = SuperTicTacToePanel.getBoardSize();
         int count = 0;
 
-        // Checks for CATS game by seeing if every button has been selected
+        // Checks for CATS game by checking if every button has been selected
         for (int rowz = 0; rowz < boardSize; rowz++) {
             for (int colz = 0; colz < boardSize; colz++) {
                 int totalSize = boardSize * boardSize;
                 if ((getCell(rowz, colz) == CellStatus.O) || (getCell(rowz, colz) == CellStatus.X)) {
                     count++;
                 }
+                //changes Status to CATS if every button is selected
                 if (count == totalSize) {
                     status = GameStatus.CATS;
                 }
             }
         }
 
-        // Checks if columns in Xs have connections needed to win
-        // This calculation only checks for the connections needed
+        // Checks if columns have connections needed to win for X to win
         for (int rows = 0; rows < boardSize; rows++) {
             for (int cols = 0; cols < boardSize; cols++) {
+                //counts the first X and then checks for consecutive Xs in rows
                 if (getCell(rows, cols) == CellStatus.X) {
-                    //I set the highlight Index to 1 immediately
-
                     int countX=1;
+                    //Integer used resets the row count to check the opposite side of the board
                     int firstRow = 0;
-                    //but then I don't use the HighLight Index. This is so I don't have to use increment it outside the next for loop.
+                    //Saves location of rows and columns into arrays
                     highlightRows[0] = rows;
                     highlightCol[0]= cols;
 
-
+                    //for loop that goes for connections need to win.
                     for(int i=1; i<countToWin; i++ ) {
-                        //This is where Increment the loop. It starts at 1.
 
+                        //Checks that the row is not out of bounds
                         if (rows + i < boardSize) {
 
+                            //increments count and saves the column and row if the cell has a cellStatus of X
                             if (getCell(rows+i, cols) == CellStatus.X) {
-
                                 countX++;
                                 highlightRows[i] = rows+i;
                                 highlightCol[i]= cols;
-
                             }
 
-
+                            //checks the first row if next row is out of bounds
                         }else if (rows+i >= boardSize) {
-                            if (getCell(firstRow, cols) == CellStatus.X) {
 
+                            //increments count and saves the column and row if the cell has a cellStatus of X
+                            if (getCell(firstRow, cols) == CellStatus.X) {
                                 countX++;
                                 highlightRows[i] = firstRow;
                                 highlightCol[i]= cols;
 
                             }
+                            //Increments the count of the firstRow
                             firstRow++;
                         }
 
                     }
+                    //checks if X has the connection needed to win then
+                    //returns GameStatus.X_WON and sets highLightNeeded to true
                     if(countX == countToWin) {
                         status = GameStatus.X_WON;
                         highlightNeeded = true;
-                        //I return that X wins.
                         return status;
 
 
@@ -266,33 +277,39 @@ public class SuperTicTacToeGame {
         // Checks if Os in columns have connections needed to win
         for (int rows = 0; rows < boardSize; rows++) {
             for (int cols = 0; cols < boardSize; cols++) {
+                //checks for initial O and then checks for consecutive Os in columns
                 if (getCell(rows, cols) == CellStatus.O) {
+
                     int countO=1;
                     int firstRow = 0;
 
                     highlightRows[0] = rows;
                     highlightCol[0]= cols;
-
+                    //Checks for consecutive Os in columns
                     for(int i=1; i<countToWin; i++ ) {
+                        //Checks next row for Os as long as the array is not out of bounds
                         if (rows + i < boardSize) {
-
+                            //Increments countO and saves the position
                             if (getCell(rows+i, cols) == CellStatus.O) {
                                 highlightRows[i] = rows+i;
                                 highlightCol[i]= cols;
                                 countO++;
 
                             }
+                            //Checks the first row for Os when the column number is out of bounds
                         }else if (rows+i >= boardSize) {
                             if (getCell(firstRow, cols) == CellStatus.O) {
                                 countO++;
                                 highlightRows[i] = firstRow;
                                 highlightCol[i]= cols;
                             }
-
+                            //increments first row
                             firstRow++;
                         }
 
                     }
+                    //Checks if Os have won by seeing if they have connections needed to win then
+                    //Sets highLightNeed to true which highLights the game Status and return the status
                     if(countO == countToWin) {
                         status = GameStatus.O_WON;
                         highlightNeeded = true;
@@ -304,32 +321,40 @@ public class SuperTicTacToeGame {
             }
         }
 
-        // Checks for connections in O rows
+        // Checks if O has the connections needed to win
         for (int rows = 0; rows < boardSize; rows++) {
             for (int cols = 0; cols < boardSize; cols++) {
+                //Checks if O has a connection
                 if (getCell(rows, cols) == CellStatus.O) {
                     int countO=1;
                     int firstCol = 0;
                     highlightRows[0] = rows;
                     highlightCol[0]= cols;
+                    //checks for consecutive connection for the count needed to win in rows
                     for(int i=1; i<countToWin; i++ ) {
+                        //checks that columns is not out of bounds
                         if (cols + i < boardSize) {
+                            //increments the count if the cell status is O and saves location
                             if (getCell(rows, cols+i) == CellStatus.O) {
                                 countO++;
                                 highlightRows[i] = rows;
                                 highlightCol[i]= cols+i;
                             }
+                            //checks if columns is out of bounds
                         }else if (cols+i >= boardSize) {
+                            //checks the first columns cell status for O and increments the count
                             if (getCell(rows, firstCol) == CellStatus.O) {
                                 countO++;
                                 highlightRows[i] = rows;
                                 highlightCol[i]= firstCol;
 
                             }
+                            //increments firstCol
                             firstCol++;
                         }
 
                     }
+                    //returns the status if O won and sets highLight needed to true
                     if(countO == countToWin) {
                         status = GameStatus.O_WON;
                         highlightNeeded = true;
@@ -341,32 +366,40 @@ public class SuperTicTacToeGame {
             }
         }
 
-        // Checks for connections in x rows
+        // Checks for connections needed to win in rows for X
         for (int rows = 0; rows < boardSize; rows++) {
             for (int cols = 0; cols < boardSize; cols++) {
+                // Checks for initial X and starts countX
                 if (getCell(rows, cols) == CellStatus.X) {
-                    int countX=1;
+                    int countX = 1;
                     int firstCol = 0;
                     highlightRows[0] = rows;
                     highlightCol[0]= cols;
-
+                    //Checks consecutive Xs in rows for connections needed to win
                     for(int i=1; i<countToWin; i++ ) {
+                        //checks that the columns is not bigger than the board
                         if (cols + i < boardSize) {
+                            //Increments count and saves row and collumn
                             if (getCell(rows, cols+i) == CellStatus.X) {
                                 highlightRows[i] = rows;
                                 highlightCol[i]= cols+i;
                                 countX++;
                             }
+                            // Check if the column value is bigger than the board
                         }else if (cols+i >= boardSize) {
+                            //checks the first column for X
                             if (getCell(rows, firstCol) == CellStatus.X) {
                                 highlightRows[i] = rows;
                                 highlightCol[i]= firstCol;
                                 countX++;
                             }
+                            //increments the first column
                             firstCol++;
                         }
 
                     }
+                    //checks if X has connections needed to win
+                    //returns the gamestatus and chenges highlight needed to true
                     if(countX == countToWin) {
                         status = GameStatus.X_WON;
                         highlightNeeded = true;
@@ -377,7 +410,9 @@ public class SuperTicTacToeGame {
                 }
             }
         }
+        //returns either IN_PROGRESS or CATS
         return status;
+
     }
 
     public boolean undo(){
@@ -446,7 +481,16 @@ public class SuperTicTacToeGame {
         return board[row][col];
     }
 
+    /******************************************************************
+     * This method randomly selects a spot for the AI to move if their
+     * are no better spaces available
+     *****************************************************************/
     public void randomMove() {
+
+        //Counts Empty Spaces
+        int countEmpty = 0;
+        //Used as the index for the array
+        int index =0 ;
 
         //stops the game from making a move if the game is over
         if(getGameStatus() != GameStatus.X_WON) {
@@ -455,10 +499,10 @@ public class SuperTicTacToeGame {
             positionRow = new int [boardLength*boardLength];
             positionCol = new int [boardLength*boardLength];
             randMove = new Random(boardLength*boardLength-1);
-            int countEmpty=0;
-            int index = 0;
+            countEmpty=0;
+            index = 0;
 
-            //counts the empty spots and saves to array
+            //counts the empty locations and saves to empty location to an array
             for (int row = 0; row < SuperTicTacToePanel.getBoardSize(); row++) {
                 for (int col = 0; col < SuperTicTacToePanel.getBoardSize(); col++) {
                     if (board[row][col] == CellStatus.EMPTY) {
@@ -466,8 +510,8 @@ public class SuperTicTacToeGame {
                         positionCol[index] = col;
                         index++;
                         countEmpty++;
-                    } else {
                         //This prevents array from having empty spaces
+                    } else {
                         positionRow[index] = 99;
                         positionCol[index] = 99;
                         index++;
@@ -494,117 +538,66 @@ public class SuperTicTacToeGame {
         }
     }
 
+    /******************************************************************
+     * This method checks for a winning space and selects the
+     * winning space or returns false otherwise
+     * @return returns true if the AI can win
+     *****************************************************************/
     public boolean canIwin() {
 
+        //retrieves BoardSize and CountTowin from SuperTicTacToePanel
         int countToWin = SuperTicTacToePanel.getCountToWin();
         int boardSize = SuperTicTacToePanel.getBoardSize();
 
-        //prevents the AI from moving after the game ends
-        if(getGameStatus() == GameStatus.X_WON) {
-            return false;
-        }
+        //Used when looping to the other side
+        int firstRow = 0;
+        int firstCol = 0;
 
-        //checks for 2 connections in row when the first cellstatus is O
-        if(countToWin == 2) {
-            for (int rows = 0; rows < boardSize; rows++) {
-                for (int cols = 0; cols < boardSize; cols++) {
-                    if (getCell(rows, cols) == CellStatus.O) {
-                        //checks for rows
-                        if (cols + 1 < boardSize) {
-                            if (getCell(rows, cols+1) == CellStatus.EMPTY) {
-                                select(rows, cols+1);
-                                return true;
-                            }
-
-                        }else if(cols + 1 == boardSize) {
-                            if(getCell(rows, 0) == CellStatus.EMPTY) {
-                                select(rows, 0);
-                                return true;
-                            }
-                        }
-                        //checks for collumns
-                        if (rows + 1 < boardSize) {
-                            if (getCell(rows +1, cols) == CellStatus.EMPTY) {
-                                select(rows+1, cols);
-                                return true;
-                            }
-                        }else if(rows + 1 == boardSize) {
-                            if(getCell(0, cols) == CellStatus.EMPTY) {
-                                select(0, cols);
-                                return true;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        //Checks for 2 connections in rows and columns consecutive starting with an empty space
-        if(countToWin == 2) {
-            for (int rows = 0; rows < boardSize; rows++) {
-                for (int cols = 0; cols < boardSize; cols++) {
-                    if (getCell(rows, cols) == CellStatus.EMPTY) {
-                        if (cols + 1 < boardSize) {
-                            if (getCell(rows, cols+1) == CellStatus.O) {
-                                select(rows, cols);
-                                return true;
-                            }
-
-                        }else if(cols + 1 == boardSize) {
-                            if(getCell(rows, 0) == CellStatus.O) {
-                                select(rows, cols);
-                                return true;
-                            }
-                        }
-                        if (rows + 1 < boardSize) {
-                            if (getCell(rows +1, cols) == CellStatus.O) {
-                                select(rows, cols);
-                                return true;
-                            }
-
-                        }else if(rows + 1 == boardSize) {
-                            if(getCell(0, cols) == CellStatus.O) {
-                                select(rows, cols);
-                                return true;
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        //Save location of empty space
+        int empRow = 0;
+        int empCol = 0;
+        //Count O on board
+        int countO = 0;
+        //Counts empty spaces on the board
+        int countEmpty =0;
 
         //Checks consecutive rows with 3 or more starting with cellStatus O
-        if(countToWin >=3) {
-            for (int rows = 0; rows < boardSize; rows++) {
-                for (int cols = 0; cols < boardSize; cols++) {
-                    if (getCell(rows, cols) == CellStatus.O) {
-                        int countO=1;
-                        int firstCol = 0;
-                        for(int i=1; i<countToWin-1; i++ ) {
-                            if (cols + i < boardSize) {
-                                if (getCell(rows, cols+i) == CellStatus.O) {
-                                    countO++;
+        for (int rows = 0; rows < boardSize; rows++) {
+            for (int cols = 0; cols < boardSize; cols++) {
+                //Checks for a O in every cell
+                if (getCell(rows, cols) == CellStatus.O) {
+                    countO = 1;
+                    firstCol = 0;
+                    //checks for one less O than the connection to win
+                    for(int i=1; i<countToWin-1; i++ ) {
+                        //Checks the next column for O, unless the no column exists
+                        if (cols + i < boardSize) {
+                            if (getCell(rows, cols+i) == CellStatus.O) {
+                                countO++;
 
-                                }
-
-                            }else if (cols+i >= boardSize) {
-                                if (getCell(rows, firstCol) == CellStatus.O) {
-                                    countO++;
-                                }
-                                firstCol++;
                             }
-                            //If the connection is one less then the connections needed to win it checks that the last space is empty and then selects it
-                            if(countO==countToWin-1) {
-                                if (cols + i+1 < boardSize) {
-                                    if (getCell(rows, cols+i+1) == CellStatus.EMPTY) {
-                                        select(rows, cols+i+1);
-                                        return true;
-                                    }
-                                }else{
-                                    if (getCell(rows, firstCol) == CellStatus.EMPTY) {
-                                        select(rows, firstCol);
-                                        return true;
-                                    }
+                            //checks the first column for Os if no column exists
+                        }else if (cols+i >= boardSize) {
+                            if (getCell(rows, firstCol) == CellStatus.O) {
+                                countO++;
+                            }
+                            firstCol++;
+                        }
+                        //If the connection is one less then the connections needed to win it checks that the last space is empty and then selects it
+                        if(countO==countToWin-1) {
+                            //checks if the column number is smaller than the board size
+                            if (cols + i+1 < boardSize) {
+                                //Selects the row and column if the space is empty and returns true
+                                if (getCell(rows, cols+i+1) == CellStatus.EMPTY) {
+                                    select(rows, cols+i+1);
+                                    return true;
+                                }
+                                //If the column is larger than the board size it checks for an empty space in the first column
+                            }else{
+                                //Selects the row and column if the space is empty and returns true
+                                if (getCell(rows, firstCol) == CellStatus.EMPTY) {
+                                    select(rows, firstCol);
+                                    return true;
                                 }
                             }
                         }
@@ -612,37 +605,43 @@ public class SuperTicTacToeGame {
                 }
             }
         }
+
         //Checks consecutive Column with 3 or more starting with cellStatus O
-        if(countToWin >=3) {
-            for (int rows = 0; rows < boardSize; rows++) {
-                for (int cols = 0; cols < boardSize; cols++) {
-                    if (getCell(rows, cols) == CellStatus.O) {
-                        int countO=1;
-                        int firstRow = 0;
-                        for(int i=1; i<countToWin-1; i++ ) {
-                            if (rows + i < boardSize) {
-                                if (getCell(rows+i, cols) == CellStatus.O) {
-                                    countO++;
+        for (int rows = 0; rows < boardSize; rows++) {
+            for (int cols = 0; cols < boardSize; cols++) {
+                //Checks for an O in every cell
+                if (getCell(rows, cols) == CellStatus.O) {
+                    countO = 1;
+                    firstRow = 0;
+                    //checks that consecutive rows have one less O than the connection needed to win
+                    for(int i=1; i<countToWin-1; i++ ) {
+                        //if the next row is exist checks for Os
+                        if (rows + i < boardSize) {
+                            if (getCell(rows+i, cols) == CellStatus.O) {
+                                countO++;
 
-                                }
-                            }else if (rows+i >= boardSize) {
-                                if (getCell(firstRow, cols) == CellStatus.O) {
-                                    countO++;
-                                }
-                                firstRow++;
                             }
-                            //If the connection is one less then the connections needed to win it checks that the last space is empty and then selects it
-                            if(countO==countToWin-1) {
-                                if (rows + i+1 < boardSize) {
-                                    if (getCell(rows+ i+1, cols) == CellStatus.EMPTY) {
-                                        select(rows+i+1, cols);
-                                        return true;
-                                    }
-                                }else{
-                                    if (getCell(firstRow, cols) == CellStatus.EMPTY) {
-                                        select(firstRow, cols);
-                                        return true;
-                                    }
+                            //if the next row does not exist checks the first row for Os
+                        }else if (rows+i >= boardSize) {
+                            if (getCell(firstRow, cols) == CellStatus.O) {
+                                countO++;
+                            }
+                            //increments firstRow
+                            firstRow++;
+                        }
+                        //If the connection is one less then the connections needed to win it checks that the last space is empty and then selects it
+                        if(countO == countToWin-1) {
+                            //if the next row exists checks for empty and then the selects position
+                            if (rows + i+1 < boardSize) {
+                                if (getCell(rows + i + 1, cols) == CellStatus.EMPTY) {
+                                    select(rows + i + 1, cols);
+                                    return true;
+                                }
+                            }else{
+                                //if the next row is does not exist checks the first row for an empty and then selects the position
+                                if (getCell(firstRow, cols) == CellStatus.EMPTY) {
+                                    select(firstRow, cols);
+                                    return true;
                                 }
                             }
                         }
@@ -650,197 +649,222 @@ public class SuperTicTacToeGame {
                 }
             }
         }
+
 
         //checks for columns with 3 or more connections starting with an empty cell status then consecutive O cell statuses
-        if(countToWin >=3) {
-            for (int rows = 0; rows < boardSize; rows++) {
-                for (int cols = 0; cols < boardSize; cols++) {
-                    if (getCell(rows, cols) == CellStatus.EMPTY) {
-                        int countO=0;
-                        int firstRow = 0;
-                        //saves the empty cell location
-                        int empRow = rows;
-                        int empCol = cols;
+        for (int rows = 0; rows < boardSize; rows++) {
+            for (int cols = 0; cols < boardSize; cols++) {
+                //checks for an empty cell
+                if (getCell(rows, cols) == CellStatus.EMPTY) {
+                    countO=0;
+                    firstRow = 0;
+                    //saves the empty cell location
+                    empRow = rows;
+                    empCol = cols;
 
+                    //checks for consecutive Os in columns
+                    for(int i=1; i<countToWin; i++ ) {
+                        //checks the next row if it exists for Os
+                        if (rows + i < boardSize) {
+                            if (getCell(rows+i, cols) == CellStatus.O) {
+                                countO++;
 
-                        for(int i=1; i<countToWin; i++ ) {
-                            if (rows + i < boardSize) {
-                                if (getCell(rows+i, cols) == CellStatus.O) {
-                                    countO++;
-
-                                }
-                            }else if (rows+i >= boardSize) {
-                                if (getCell(firstRow, cols ) == CellStatus.O) {
-                                    countO++;
-                                }
-                                firstRow++;
                             }
-                            //checks the final cell status and selects the empty cell
-                            if(countO==countToWin-1) {
-                                if (rows + i < boardSize) {
-                                    if (getCell(rows + i, cols) == CellStatus.O) {
-                                        select(empRow, empCol);
-                                        return true;
-                                    }
-                                }else{
-                                    if (getCell(firstRow-1, cols) == CellStatus.O) {
-                                        select(empRow, empCol);
-                                        return true;
-                                    }
+                            //checks the first row for Os if the next row does not exist
+                        }else if (rows+i >= boardSize) {
+                            if (getCell(firstRow, cols ) == CellStatus.O) {
+                                countO++;
+                            }
+                            firstRow++;
+                        }
+                        //checks the final cell status and selects the empty cell
+                        if(countO==countToWin-1) {
+                            //checks the last column for O and selects the empty cell
+                            if (rows + i < boardSize) {
+                                if (getCell(rows + i, cols) == CellStatus.O) {
+                                    select(empRow, empCol);
+                                    return true;
+                                }
+                            }else{
+                                //checks the first column for O and selects the empty cell
+                                if (getCell(firstRow-1, cols) == CellStatus.O) {
+                                    select(empRow, empCol);
+                                    return true;
                                 }
                             }
                         }
                     }
                 }
-
             }
+
         }
-        //checks for rows with 3 or more connections starting with an empty cellstatus then consecutive O cellStatuses
-        if(countToWin >=3) {
-            for (int rows = 0; rows < boardSize; rows++) {
-                for (int cols = 0; cols < boardSize; cols++) {
-                    if (getCell(rows, cols) == CellStatus.EMPTY) {
-                        int countO=0;
-                        int firstCol = 0;
-                        //saves the location of the empty cell
-                        int empRow = rows;
-                        int empCol = cols;
+        //check rows for connections starting with an empty cell status then consecutive O cellStatuses
+        for (int rows = 0; rows < boardSize; rows++) {
+            for (int cols = 0; cols < boardSize; cols++) {
+                //Checks for empty cellStatus
+                if (getCell(rows, cols) == CellStatus.EMPTY) {
+                    countO = 0;
+                    firstCol = 0;
+                    //saves the location of the empty cell
+                    empRow = rows;
+                    empCol = cols;
+                    //checks for consecutive Os in rows
+                    for(int i=1; i<countToWin; i++ ) {
+                        //checks the next column for O
+                        if (cols + i < boardSize) {
+                            if (getCell(rows, cols+i) == CellStatus.O) {
+                                countO++;
 
-
-
-                        for(int i=1; i<countToWin; i++ ) {
+                            }
+                            //checks the first column for O if the next column does not exist
+                        }else if (cols+i >= boardSize) {
+                            if (getCell(rows, firstCol) == CellStatus.O) {
+                                countO++;
+                            }
+                            firstCol++;
+                        }
+                        //checks the final cell status and selects the empty cell
+                        if(countO==countToWin-1) {
+                            //checks the next column for O and selects the empty column
                             if (cols + i < boardSize) {
                                 if (getCell(rows, cols+i) == CellStatus.O) {
-                                    countO++;
+                                    select(empRow, empCol);
+                                    return true;
+                                }
 
+                            }else{
+                                //If the first column is O then it selects the empty cell
+                                if (getCell(rows, firstCol-1) == CellStatus.O) {
+                                    select(empRow, empCol );
+                                    return true;
                                 }
-                            }else if (cols+i >= boardSize) {
-                                if (getCell(rows, firstCol) == CellStatus.O) {
-                                    countO++;
-                                }
-                                firstCol++;
+
                             }
-                            //checks the final cell status and selects the empty cell
-                            if(countO==countToWin-1) {
-                                if (cols + i < boardSize) {
-                                    if (getCell(rows, cols+i) == CellStatus.O) {
-                                        select(empRow, empCol);
-                                        return true;
-                                    }
-                                }else{
-                                    if (getCell(rows, firstCol-1) == CellStatus.O) {
-                                        select(empRow, empCol );
-                                        return true;
-                                    }
+                        }
+                    }
+                }
+            }
 
+        }
+
+        //checks for connection need to win, where there is a gap between Os
+        for (int rows = 0; rows < boardSize; rows++) {
+            for (int cols = 0; cols < boardSize; cols++) {
+                //checks for an O
+                if (getCell(rows, cols) == CellStatus.O) {
+                    countO=1;
+                    firstCol = 0;
+                    countEmpty = 0;
+                    empRow=99;
+                    empCol=99;
+                    //checks for an empty spot or an O
+                    for(int i=1; i<countToWin-1; i++ ) {
+                        //checks the next column
+                        if (cols + i < boardSize) {
+                            //checks for O
+                            if (getCell(rows, cols+i) == CellStatus.O) {
+                                countO++;
+
+                            }
+                            //checks for empty
+                            if (getCell(rows, cols+i) == CellStatus.EMPTY) {
+                                countEmpty++;
+                                empRow = rows;
+                                empCol = cols+i;
+                            }
+                            //checks the first column if the next column does not exist
+                        }else if (cols+i >= boardSize) {
+                            //checks for O
+                            if (getCell(rows, firstCol) == CellStatus.O) {
+                                countO++;
+                            }
+                            //checks for empty
+                            if (getCell(rows, firstCol) == CellStatus.EMPTY) {
+                                countEmpty++;
+                                empRow = rows;
+                                empCol = firstCol;
+                            }
+                            firstCol++;
+                        }
+                        //Checks if the AI has 2 less connection than needed to win and one empty space
+                        if(countO == countToWin-2 && countEmpty == 1) {
+                            //checks the next row for final connection and selects the empty space
+                            if (cols + i+1 < boardSize) {
+                                if (getCell(rows, cols+i+1) == CellStatus.O) {
+                                    select(empRow, empCol);
+                                    return true;
+                                }
+                            }
+                            //checks the next row for final connection and selects the empty space
+                            else{
+                                if (getCell(rows, firstCol) == CellStatus.O) {
+                                    select(empRow, empCol);
+                                    return true;
                                 }
                             }
                         }
                     }
                 }
-
             }
-        }
-        //checks for unconsecutive rows (where there is a gap between Os) for 3 or more connections
-        if(countToWin >=3) {
-            for (int rows = 0; rows < boardSize; rows++) {
-                for (int cols = 0; cols < boardSize; cols++) {
-                    if (getCell(rows, cols) == CellStatus.O) {
-                        int countO=1;
-                        int firstCol = 0;
-                        int countEmpty = 0;
-                        int empRow=99;
-                        int empCol=99;
-                        //checks for an empty spot
-                        for(int i=1; i<countToWin-1; i++ ) {
-                            if (cols + i < boardSize) {
-                                if (getCell(rows, cols+i) == CellStatus.O) {
-                                    countO++;
 
-                                }
-                                if (getCell(rows, cols+i) == CellStatus.EMPTY) {
-                                    countEmpty++;
-                                    empRow = rows;
-                                    empCol = cols+i;
-                                }
-                            }else if (cols+i >= boardSize) {
-                                if (getCell(rows, firstCol) == CellStatus.O) {
-                                    countO++;
-                                }
-                                if (getCell(rows, firstCol) == CellStatus.EMPTY) {
-                                    countEmpty++;
-                                    empRow = rows;
-                                    empCol = firstCol;
-                                }
-                                firstCol++;
+        }
+
+        //checks for rows for unconsecutive connections needed to win
+        for (int rows = 0; rows < boardSize; rows++) {
+            for (int cols = 0; cols < boardSize; cols++) {
+                //checks for an O
+                if (getCell(rows, cols) == CellStatus.O) {
+                    countO = 1;
+                    firstRow = 0;
+                    countEmpty = 0;
+                    empRow = 99;
+                    empCol = 99;
+                    //Checks for empty spaces and connections
+                    for(int i=1; i<countToWin -1; i++ ) {
+                        //checks the next row
+                        if (rows + i < boardSize) {
+                            //counts Os
+                            if (getCell(rows+i, cols) == CellStatus.O) {
+                                countO++;
                             }
-                            //checks the final spots cell status and selects the empty spot
-                            //If statement checks if conditions are met
-                            if(countO==countToWin-2 && countEmpty == 1 && empRow !=99) {
-                                if (cols + i+1 < boardSize) {
-                                    if (getCell(rows, cols+i+1) == CellStatus.O) {
-                                        select(empRow, empCol);
-                                        return true;
-                                    }
-                                }
-                                else{
-                                    if (getCell(rows, firstCol) == CellStatus.O) {
-                                        select(empRow, empCol);
-                                        return true;
-                                    }
-                                }
+                            //Counts empty space and save location
+                            if (getCell(rows+i, cols) == CellStatus.EMPTY) {
+                                //saves location of empty space
+                                countEmpty++;
+                                empRow = rows+i;
+                                empCol = cols;
                             }
+                            //checks the first row if the next row does not exist
+                        }else if (rows+i >= boardSize) {
+                            //counts Os
+                            if (getCell(firstRow, cols) == CellStatus.O) {
+                                countO++;
+                            }
+                            //Counts empty space and save location
+                            if (getCell(firstRow, cols) == CellStatus.EMPTY) {
+                                countEmpty++;
+                                empRow = firstRow;
+                                empCol = cols;
+                            }
+                            firstRow++;
                         }
-                    }
-                }
-
-            }
-        }
-        //checks for unconsecutive rows (where there is a gap between Os) for 3 or more connections
-        if(countToWin >=3) {
-            for (int rows = 0; rows < boardSize; rows++) {
-                for (int cols = 0; cols < boardSize; cols++) {
-                    if (getCell(rows, cols) == CellStatus.O) {
-                        int countO=1;
-                        int firstRow = 0;
-                        int countEmpty = 0;
-                        int empRow=99;
-                        int empCol=99;
-                        for(int i=1; i<countToWin -1; i++ ) {
-                            if (rows + i < boardSize) {
-                                if (getCell(rows+i, cols) == CellStatus.O) {
-                                    countO++;
+                        //Checks that count O is 2 less the than the connections to win and county empty is one
+                        if(countO == countToWin-2 && countEmpty == 1 ) {
+                            //checks the next row for the final connection
+                            if (rows + i+1 < boardSize) {
+                                //checks that final space is an O and selects empty spot
+                                if (getCell(rows +i+1 , cols) == CellStatus.O) {
+                                    select(empRow, empCol);
+                                    return true;
                                 }
-                                if (getCell(rows+i, cols) == CellStatus.EMPTY) {
-                                    //saves location of empty space
-                                    countEmpty++;
-                                    empRow = rows+i;
-                                    empCol = cols;
-                                }
-                            }else if (rows+i >= boardSize) {
+                            }
+                            //checks that first row for the final connection
+                            else{
+                                //checks that final space is an O and selects empty spot
                                 if (getCell(firstRow, cols) == CellStatus.O) {
-                                    countO++;
-                                }
-                                if (getCell(firstRow, cols) == CellStatus.EMPTY) {
-                                    countEmpty++;
-                                    empRow = firstRow;
-                                    empCol = cols;
-                                }
-                                firstRow++;
-                            }
-                            //checks that final space is an O and selects empty spot
-                            if(countO ==countToWin-2 && countEmpty == 1 && empRow !=99) {
-                                if (rows + i+1 < boardSize) {
-                                    if (getCell(rows +i+1 , cols) == CellStatus.O) {
-                                        select(empRow, empCol);
-                                        return true;
-                                    }
-                                }
-                                else{
-                                    if (getCell(firstRow, cols) == CellStatus.O) {
-                                        select(empRow, empCol);
-                                        return true;
-                                    }
+
+                                    select(empRow, empCol);
+                                    return true;
                                 }
                             }
                         }
@@ -848,344 +872,729 @@ public class SuperTicTacToeGame {
                 }
             }
         }
+        //Returns false if the AI does not have a winning move
         return false;
     }
 
+    /******************************************************************
+     * This method checks if the player is going to win and selects a
+     * space for the AI to block
+     * @return returns true if the AI can block
+     *****************************************************************/
     public boolean canIBlock() {
 
+        //Saves Empty Space column and row
+        int empRow = 0;
+        int empCol = 0;
+        //counts empty spaces on the board
+        int countEmpty = 0;
+        //Used if when the board loops
+        int firstCol = 0;
+        int firstRow = 0;
+        //Counts the number of Xs on the board
+        int countX = 0;
+
+
+        //Retrieves countToWin and boardSize from SuperTicTacToePanel
+        int countToWin = SuperTicTacToePanel.getCountToWin() ;
+        int boardSize = SuperTicTacToePanel.getBoardSize();
+
+        //blocks consecutive Xs in rows
+        for (int rows = 0; rows < boardSize; rows++) {
+            for (int cols = 0; cols < boardSize; cols++) {
+                //Looks for first x
+                if (getCell(rows, cols) == CellStatus.X) {
+                    countX = 1;
+                    firstCol = 0;
+                    //counts Xs to see if player has one less than connections needed to win
+                    for(int i=1; i<countToWin-1; i++ ) {
+                        //checks the next column
+                        if (cols + i < boardSize) {
+                            if (getCell(rows, cols+i) == CellStatus.X) {
+                                countX++;
+
+                            }
+                            //checks the first column if the next column does not exist
+                        }else if (cols+i >= boardSize) {
+                            if (getCell(rows, firstCol) == CellStatus.X) {
+                                countX++;
+                            }
+                            firstCol++;
+                        }
+                        //If X has 1 less than the connection needed to win the AI will select a space to block
+                        if(countX==countToWin-1) {
+                            //checks the next column for an empty space
+                            if (cols + i+1 < boardSize) {
+                                //Selects a space to block if the cell is empty
+                                if (getCell(rows, cols+i+1) == CellStatus.EMPTY) {
+                                    select(rows, cols+i+1);
+                                    return true;
+                                }
+                                //checks the first column if the next column does not exist
+                            }else{
+                                //Selects a space to block if the cell is empty
+                                if (getCell(rows, firstCol) == CellStatus.EMPTY) {
+                                    select(rows, firstCol );
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
+        //Blocks X in rows starting with an empty space
+        for (int rows = 0; rows < boardSize; rows++) {
+            for (int cols = 0; cols < boardSize; cols++) {
+                //Checks for empty spaces
+                if (getCell(rows, cols) == CellStatus.EMPTY) {
+                    countX=0;
+                    firstCol = 0;
+                    empRow = rows;
+                    empCol = cols;
+                    //Checks for consecutive X in rows.
+                    for(int i=1; i<countToWin; i++ ) {
+                        //checks to see the next row exists
+                        if (cols + i < boardSize) {
+                            // Increment countX if there is X in cell
+                            if (getCell(rows, cols+i) == CellStatus.X) {
+                                countX++;
+                            }
+                            //checks to see the next row exists
+                        }else if (cols+i >= boardSize) {
+                            // Increment countX if there is X in cell
+                            if (getCell(rows, firstCol) == CellStatus.X) {
+                                countX++;
+                            }
+                            // Increment firstCol if there is X in cell
+                            firstCol++;
+                        }
+                        //Checks X has one less than the count needed to win
+                        if(countX==countToWin-1) {
+                            //checks to see the next row exists
+                            if (cols + i < boardSize) {
+                                //checks the final space for X and selects the empty space
+                                if (getCell(rows, cols+i) == CellStatus.X) {
+                                    select(empRow, empCol);
+                                    return true;
+                                }
+                                //checks the first row if the next row does not exist
+                            }else{
+                                if (getCell(rows, firstCol-1) == CellStatus.X) {
+                                    //checks the final space for X and selects the empty space
+                                    select(empRow, empCol );
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        //blocks X in columns starting with an empty cell
+        for (int rows = 0; rows < boardSize; rows++) {
+            for (int cols = 0; cols < boardSize; cols++) {
+                //Checks for an empty cell
+                if (getCell(rows, cols) == CellStatus.EMPTY) {
+                    countX = 0;
+                    firstRow = 0;
+                    //Saves empty cell coordinates
+                    empRow = rows;
+                    empCol = cols;
+                    //Checks for an consecutive Xs in columns
+                    for(int i=1; i<countToWin; i++ ) {
+                        //Checks if next row exists
+                        if (rows + i < boardSize) {
+                            //Increment count if cellStatus equals X
+                            if (getCell(rows+i, cols) == CellStatus.X) {
+                                countX++;
+                            }
+                            //If the next row does not exist goes to the first row
+                        }else if (rows+i >= boardSize) {
+                            //Increment count if cellStatus equals X
+                            if (getCell(firstRow, cols ) == CellStatus.X) {
+                                countX++;
+                            }
+                            firstRow++;
+                        }
+                        //Checks that X is one space from winning
+                        if(countX==countToWin-1) {
+                            //Checks if next row exists
+                            if (rows + i < boardSize) {
+                                //Selects the empty space if the cell status is X
+                                if (getCell(rows + i, cols) == CellStatus.X) {
+                                    select(empRow, empCol);
+                                    return true;
+                                }
+                                //If the next row does not exist goes to the first row
+                            }else{
+                                //Selects the empty space if the cell status is X
+                                if (getCell(firstRow-1, cols) == CellStatus.X) {
+                                    select(empRow, empCol );
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        //blocks unconsecutive rows
+        for (int rows = 0; rows < boardSize; rows++) {
+            for (int cols = 0; cols < boardSize; cols++) {
+                //Checks the for X for all rows and columns
+                if (getCell(rows, cols) == CellStatus.X) {
+                    countX = 1;
+                    firstCol = 0;
+                    countEmpty = 0;
+                    empRow=99;
+                    empCol=99;
+                    //checks for empty spaces and Xs
+                    for(int i=1; i<countToWin-1; i++ ) {
+                        //checks the next column if it exists
+                        if (cols + i < boardSize) {
+                            //increments the count for the number of Xs
+                            if (getCell(rows, cols+i) == CellStatus.X) {
+                                countX++;
+                            }
+                            //increments the count for the number of empty and save the position of the empty
+                            if (getCell(rows, cols+i) == CellStatus.EMPTY) {
+                                countEmpty++;
+                                empRow = rows;
+                                empCol = cols+i;
+                            }
+                            //checks the first column if the next column does not exist
+                        }else if (cols+i >= boardSize) {
+                            //increments the count for the number of Xs
+                            if (getCell(rows, firstCol) == CellStatus.X) {
+                                countX++;
+                            }
+                            //increments the count for the number of empty and save the position of the empty
+                            if (getCell(rows, firstCol) == CellStatus.EMPTY) {
+                                countEmpty++;
+                                empRow = rows;
+                                empCol = firstCol;
+                            }
+                            firstCol++;
+                        }
+                        //Checks that x has 2 less than the count needed to win and there is one empty spot
+                        if(countX==countToWin-2 && countEmpty == 1) {
+                            //Checks the next column if it exists
+                            if (cols + i+1 < boardSize) {
+                                //Selects the empty space if the final space is X
+                                if (getCell(rows, cols+i+1) == CellStatus.X) {
+                                    select(empRow, empCol);
+                                    return true;
+                                }
+                            }
+                            //Checks the fist column if the next collumn does not exist
+                            else{
+                                if (getCell(rows, firstCol) == CellStatus.X) {
+                                    //Selects the empty space if the final space is X
+                                    select(empRow, empCol);
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+        //blocks Xs for consecutive Xs in columns
+        for (int rows = 0; rows < boardSize; rows++) {
+            for (int cols = 0; cols < boardSize; cols++) {
+                //Checks for an individual X for every row and column
+                if (getCell(rows, cols) == CellStatus.X) {
+                    countX = 1;
+                    firstRow = 0;
+                    //Checks that X has 1 less than the count needed to win
+                    for(int i = 1; i<countToWin-1; i++ ) {
+                        //checks the next row exists
+                        if (rows + i < boardSize) {
+                            //Increments countX if the cellStatus is X
+                            if (getCell(rows+i, cols) == CellStatus.X) {
+                                countX++;
+                            }
+                            //checks the first row, when the next row does not exist
+                        }else if (rows+i >= boardSize) {
+                            //Increments countX if the cellStatus is X
+                            if (getCell(firstRow, cols) == CellStatus.X) {
+                                countX++;
+                            }
+                            firstRow++;
+                        }
+                        //Checks that X has one less than the connections needed
+                        if(countX==countToWin-1) {
+                            //Checks the next row
+                            if (rows + i+1 < boardSize) {
+                                //select the cell if it is empty
+                                if (getCell(rows+ i+1, cols) == CellStatus.EMPTY) {
+                                    select(rows+i+1, cols);
+                                    return true;
+                                }
+                                //Checks the first row if the next row does not exist
+                            }else{
+                                //select the cell if it is empty
+                                if (getCell(firstRow, cols) == CellStatus.EMPTY) {
+                                    select( firstRow, cols );
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        //blocks X in unconsecutive columns
+        for (int rows = 0; rows < boardSize; rows++) {
+            for (int cols = 0; cols < boardSize; cols++) {
+                //checks all cells for X
+                if (getCell(rows, cols) == CellStatus.X) {
+                    countX = 1;
+                    firstRow = 0;
+                    countEmpty = 0;
+                    empRow=99;
+                    empCol=99;
+                    //Checks for empty cells and Xs
+                    for(int i=1; i<countToWin -1; i++ ) {
+                        //checks the next row
+                        if (rows + i < boardSize) {
+                            //If x, increments the countX
+                            if (getCell(rows+i, cols) == CellStatus.X) {
+                                countX++;
+                            }
+                            //If empty, increments the count empty and saves location of empty cell
+                            if (getCell(rows+i, cols) == CellStatus.EMPTY) {
+                                countEmpty++;
+                                empRow = rows+i;
+                                empCol = cols;
+                            }
+                            //Checks the first row if the next row does not exist
+                        }else if (rows+i >= boardSize) {
+                            //If x, increments the countX
+                            if (getCell(firstRow, cols) == CellStatus.X) {
+                                countX++;
+                            }
+                            //If empty, increments the count empty and saves location of empty cell
+                            if (getCell(firstRow, cols) == CellStatus.EMPTY) {
+                                countEmpty++;
+                                empRow = firstRow;
+                                empCol = cols;
+                            }
+                            //Increments firstCol
+                            firstRow++;
+                        }
+                        //If there is one empty space and 2 less connections than the count needed to win it checks the final space for X
+                        if(countX == countToWin-2 && countEmpty == 1) {
+                            //Checks the next row
+                            if (rows + i+1 < boardSize) {
+                                //Selects the empty location if the last cell is X
+                                if (getCell(rows +i+1 , cols) == CellStatus.X) {
+                                    select(empRow, empCol);
+                                    return true;
+                                }
+                            }
+                            //Checks the first row
+                            else{
+                                //Selects the empty location if the last cell is X
+                                if (getCell(firstRow, cols) == CellStatus.X) {
+                                    select(empRow, empCol);
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        //Returns false if no move can be found
+        return false;
+    }
+
+    /******************************************************************
+     * This method checks for a move that could result in a possible
+     * win for the AI.
+     * @return returns true if the AI can move to a beneficial
+     * location
+     *****************************************************************/
+    public boolean smartMoveX() {
+
+        //Gets countToWin and BoardSize from Smart Panel
         int countToWin = SuperTicTacToePanel.getCountToWin();
         int boardSize = SuperTicTacToePanel.getBoardSize();
 
-        if(getGameStatus() == GameStatus.X_WON) {
-            return false;
-        }
+        //Integers that help count the first row and column
+        int firstCol = 0;
+        int firstRow = 0;
+        //Counts empty spaces and Os
+        int smartCount = 0;
 
-        //can I block for 2 checks rows and columns consecutive
-        if(countToWin == 2) {
-            for (int rows = 0; rows < boardSize; rows++) {
-                for (int cols = 0; cols < boardSize; cols++) {
+        //Random determines which spot the AI selects
+        randMove = new Random(countToWin);
+
+        //array that saves the coordinates of possible moves
+        smartMoveRow = new int [100];
+        smartMoveCol = new int [100];
+
+        //Checks Rows for possible winning locations
+        for (int rows = 0; rows < boardSize; rows++) {
+            for (int cols = 0; cols < boardSize; cols++) {
+                if (getCell(rows, cols) == CellStatus.X || getCell(rows, cols) == CellStatus.EMPTY) {
+                    // Save locations
+                    smartMoveRow[0] = rows;
+                    smartMoveCol[0] = cols;
+                    firstCol = 0;
+
+                    //Counts empty and Xs
+                    smartCount = 1;
+
+                    //Sets the array to a larger than possible amount, which prevents it from being randomly selected
                     if (getCell(rows, cols) == CellStatus.X) {
-                        if (cols + 1 < boardSize) {
-                            if (getCell(rows, cols+1) == CellStatus.EMPTY) {
-                                select(rows, cols+1 );
-                                return true;
-                            }
+                        smartMoveRow[0] = 99;
+                        smartMoveCol[0] = 99;
 
-                        }else if(cols + 1 == boardSize) {
-                            if(getCell(rows, 0) == CellStatus.EMPTY) {
-                                select(rows, 0 );
-                                return true;
-                            }
-                        }
-                        if (rows + 1 < boardSize) {
-                            if (getCell(rows +1, cols) == CellStatus.EMPTY) {
-                                select(rows+1, cols);
-                                return true;
-                            }
-
-                        }else if(rows + 1 == boardSize) {
-                            if(getCell(0, cols) == CellStatus.EMPTY) {
-                                select(0, cols);
-                                return true;
-                            }
-                        }
                     }
-                }
-            }
-        }
+                    //check the for empty spaces or Xs
+                    for (int i = 1; i < countToWin; i++) {
+                        //Checks the next column
+                        if (cols + i < boardSize) {
+                            //check the for empty spaces or Xs
+                            if (getCell(rows, cols + i) == CellStatus.X
+                                    || getCell(rows, cols + i) == CellStatus.EMPTY) {
+                                smartCount++;
+                                //If the cell is X, sets the array to unreachable amount
+                                if (getCell(rows, cols + i) == CellStatus.X) {
 
-        //can I win for 2 checks rows and columns consecutive
-        if(countToWin == 2) {
-            for (int rows = 0; rows < boardSize; rows++) {
-                for (int cols = 0; cols < boardSize; cols++) {
-                    if (getCell(rows, cols) == CellStatus.EMPTY) {
-                        if (cols + 1 < boardSize) {
-                            if (getCell(rows, cols+1) == CellStatus.X) {
-                                select(rows, cols );
-                                return true;
-                            }
-
-                        }else if(cols + 1 == boardSize) {
-                            if(getCell(rows, 0) == CellStatus.X) {
-                                select(rows, cols );
-                                return true;
-                            }
-                        }
-                        if (rows + 1 < boardSize) {
-                            if (getCell(rows +1, cols) == CellStatus.X) {
-                                select(rows, cols);
-                                return true;
-                            }
-                        }else if(rows + 1 == boardSize) {
-                            if(getCell(0, cols) == CellStatus.X) {
-                                select(rows, cols);
-                                return true;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        //blocks consecutive rows
-        if(countToWin >=3) {
-            for (int rows = 0; rows < boardSize; rows++) {
-                for (int cols = 0; cols < boardSize; cols++) {
-                    if (getCell(rows, cols) == CellStatus.X) {
-                        int countX=1;
-                        int firstCol = 0;
-                        for(int i=1; i<countToWin-1; i++ ) {
-                            if (cols + i < boardSize) {
-                                if (getCell(rows, cols+i) == CellStatus.X) {
-                                    countX++;
+                                    smartMoveRow[i] = 99;
+                                    smartMoveCol[i] = 99;
 
                                 }
-                            }else if (cols+i >= boardSize) {
+                                //If the cell is empty, records location in an array
+                                if (getCell(rows, cols + i) == CellStatus.EMPTY) {
+
+                                    smartMoveRow[i] = rows;
+                                    smartMoveCol[i] = cols + i;
+
+                                }
+                            }
+                            //Checks the first column if the next column does not exist
+                        } else if (cols + i >= boardSize) {
+
+                            if (getCell(rows, firstCol) == CellStatus.EMPTY
+                                    || getCell(rows, firstCol) == CellStatus.X) {
+                                smartCount++;
+                                //If the cell is X, sets the array to unreachable amount
                                 if (getCell(rows, firstCol) == CellStatus.X) {
-                                    countX++;
+                                    smartMoveRow[i] = 99;
+                                    smartMoveCol[i] = 99;
                                 }
-                                firstCol++;
-                            }
-                            if(countX==countToWin-1) {
-                                if (cols + i+1 < boardSize) {
-                                    if (getCell(rows, cols+i+1) == CellStatus.EMPTY) {
-                                        select(rows, cols+i+1);
-                                        return true;
-                                    }
-                                }else{
-                                    if (getCell(rows, firstCol) == CellStatus.EMPTY) {
-                                        select(rows, firstCol );
-                                        return true;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        //blocks  rows starting with an empty then consecutive
-        if(countToWin >=3) {
-            for (int rows = 0; rows < boardSize; rows++) {
-                for (int cols = 0; cols < boardSize; cols++) {
-                    if (getCell(rows, cols) == CellStatus.EMPTY) {
-                        int countX=0;
-                        int firstCol = 0;
-                        int empRow = rows;
-                        int empCol = cols;
-
-
-
-                        for(int i=1; i<countToWin; i++ ) {
-                            if (cols + i < boardSize) {
-                                if (getCell(rows, cols+i) == CellStatus.X) {
-                                    countX++;
-
-                                }
-                            }else if (cols+i >= boardSize) {
-                                if (getCell(rows, firstCol) == CellStatus.X) {
-                                    countX++;
-                                }
-                                firstCol++;
-                            }
-                            if(countX==countToWin-1) {
-                                if (cols + i < boardSize) {
-                                    if (getCell(rows, cols+i) == CellStatus.X) {
-                                        select(empRow, empCol);
-                                        return true;
-                                    }
-                                }else{
-                                    if (getCell(rows, firstCol-1) == CellStatus.X) {
-                                        select(empRow, empCol );
-                                        return true;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        //blocks cols starting with an empty then consecutive
-        if(countToWin >=3) {
-            for (int rows = 0; rows < boardSize; rows++) {
-                for (int cols = 0; cols < boardSize; cols++) {
-                    if (getCell(rows, cols) == CellStatus.EMPTY) {
-                        int countX=0;
-                        int firstRow = 0;
-                        int empRow = rows;
-                        int empCol = cols;
-
-                        for(int i=1; i<countToWin; i++ ) {
-                            if (rows + i < boardSize) {
-                                if (getCell(rows+i, cols) == CellStatus.X) {
-                                    countX++;
-                                }
-                            }else if (rows+i >= boardSize) {
-                                if (getCell(firstRow, cols ) == CellStatus.X) {
-                                    countX++;
-                                }
-                                firstRow++;
-                            }
-                            if(countX==countToWin-1) {
-                                if (rows + i < boardSize) {
-                                    if (getCell(rows + i, cols) == CellStatus.X) {
-                                        select(empRow, empCol);
-                                        return true;
-                                    }
-                                }else{
-                                    if (getCell(firstRow-1, cols) == CellStatus.X) {
-                                        select(empRow, empCol );
-                                        return true;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        //blocks unconsecutive rows
-        if(countToWin >=3) {
-            for (int rows = 0; rows < boardSize; rows++) {
-                for (int cols = 0; cols < boardSize; cols++) {
-                    if (getCell(rows, cols) == CellStatus.X) {
-                        int countX=1;
-                        int firstCol = 0;
-                        int countEmpty = 0;
-                        int empRow=99;
-                        int empCol=99;
-                        for(int i=1; i<countToWin-1; i++ ) {
-                            if (cols + i < boardSize) {
-                                if (getCell(rows, cols+i) == CellStatus.X) {
-                                    countX++;
-                                }
-                                if (getCell(rows, cols+i) == CellStatus.EMPTY) {
-                                    countEmpty++;
-                                    empRow = rows;
-                                    empCol = cols+i;
-                                }
-                            }else if (cols+i >= boardSize) {
-                                if (getCell(rows, firstCol) == CellStatus.X) {
-                                    countX++;
-                                }
+                                //If the cell is empty, records location in an array
                                 if (getCell(rows, firstCol) == CellStatus.EMPTY) {
-                                    countEmpty++;
-                                    empRow = rows;
-                                    empCol = firstCol;
-                                }
-                                firstCol++;
-                            }
+                                    smartMoveRow[i] = rows;
+                                    smartMoveCol[i] = firstCol;
 
-                            if(countX==countToWin-2 && countEmpty == 1 && empRow !=99) {
-                                if (cols + i+1 < boardSize) {
-                                    if (getCell(rows, cols+i+1) == CellStatus.X) {
-                                        select(empRow, empCol);
-                                        return true;
-                                    }
                                 }
-                                else{
-                                    if (getCell(rows, firstCol) == CellStatus.X) {
-                                        select(empRow, empCol);
-                                        return true;
-                                    }
+                            }
+                            firstCol++;
+                        }
+                        //If the count is equal to the connection then it selects a random empty location
+                        if (smartCount == countToWin) {
+                            //It tries 50 times to select a random spot
+                            for (i = 0; i < 50; i++) {
+                                int moveIndex = randMove.nextInt(countToWin);
+                                // repeats if slot selected is not empty
+                                if (smartMoveRow[moveIndex] != 99 && smartMoveCol[moveIndex] != 99) {
+
+                                    select(smartMoveRow[moveIndex], smartMoveCol[moveIndex]);
+
+                                    return true;
                                 }
+
                             }
                         }
                     }
                 }
+
             }
         }
-
-        //blocks consecutive columns
-        if(countToWin >=3) {
-            for (int rows = 0; rows < boardSize; rows++) {
-                for (int cols = 0; cols < boardSize; cols++) {
+        //Checks Columns for possible winning locations
+        for (int rows = 0; rows < boardSize; rows++) {
+            for (int cols = 0; cols < boardSize; cols++) {
+                //check if the cell is an O or empty
+                if (getCell(rows, cols) == CellStatus.X || getCell(rows, cols) == CellStatus.EMPTY) {
+                    //Saves the location of empty cell
+                    smartMoveRow[0] = rows;
+                    smartMoveCol[0] = cols;
+                    smartCount = 1;
+                    firstRow = 0;
+                    //Saves an unreachable location for cells with O
                     if (getCell(rows, cols) == CellStatus.X) {
-                        int countO = 1;
-                        int firstRow = 0;
-                        for(int i=1; i<countToWin-1; i++ ) {
-                            if (rows + i < boardSize) {
-                                if (getCell(rows+i, cols) == CellStatus.X) {
-                                    countO++;
+                        smartMoveRow[0] = 99;
+                        smartMoveCol[0] = 99;
+
+                    }
+                    //Checks consecutive rows for empty and Xs
+                    for (int i = 1; i < countToWin; i++) {
+                        //Checks if next row exists
+                        if (rows + i < boardSize) {
+                            //checks for empty and X and increments smartCount
+                            if (getCell(rows + i, cols) == CellStatus.X
+                                    || getCell(rows + i, cols) == CellStatus.EMPTY) {
+                                smartCount++;
+                                //If X ,Saves a unreachable location
+                                if (getCell(rows + i, cols) == CellStatus.X) {
+                                    smartMoveRow[i] = 99;
+                                    smartMoveCol[i] = 99;
                                 }
-                            }else if (rows+i >= boardSize) {
-                                if (getCell(firstRow, cols) == CellStatus.X) {
-                                    countO++;
+                                //If empty ,Saves the location of the empty
+                                if (getCell(rows + i, cols) == CellStatus.EMPTY) {
+                                    smartMoveRow[i] = rows + i;
+                                    smartMoveCol[i] = cols;
+
                                 }
+                                //Goes to first row if next row does not exist
+                            } else if (rows + i >= boardSize) {
+                                //checks for empty and X and increments smartCount
+                                if (getCell(firstRow, cols) == CellStatus.EMPTY
+                                        || getCell(firstRow, cols) == CellStatus.X) {
+                                    smartCount++;
+                                    //If X , saves a unreachable location
+                                    if (getCell(firstRow, cols) == CellStatus.X) {
+
+                                        smartMoveRow[i] = 99;
+                                        smartMoveCol[i] = 99;
+                                    }
+                                    //If empty ,Saves the location of the empty
+                                    if (getCell(firstRow, cols) == CellStatus.EMPTY) {
+                                        smartMoveRow[i] = firstRow;
+                                        smartMoveCol[i] = cols;
+
+                                    }
+
+                                }
+                                //increments firstRow
                                 firstRow++;
                             }
-                            if(countO==countToWin-1) {
-                                if (rows + i+1 < boardSize) {
-                                    if (getCell(rows+ i+1, cols) == CellStatus.EMPTY) {
-                                        select(rows+i+1, cols);
+                            //If the smartCount is equal to the number of connection then it selects a random empty space
+                            if (smartCount == countToWin) {
+                                // repeats if slot selected is not empty
+                                for (i = 0; i < 25; i++) {
+                                    int moveIndex = randMove.nextInt(countToWin);
+                                    // repeats if smartMoveCol[moveIndex] == 99 (not empty)
+                                    if (smartMoveRow[moveIndex] != 99 && smartMoveCol[moveIndex] != 99) {
+                                        select(smartMoveRow[moveIndex], smartMoveCol[moveIndex]);
                                         return true;
                                     }
-                                }else{
-                                    if (getCell(firstRow, cols) == CellStatus.EMPTY) {
-                                        select( firstRow, cols );
-                                        return true;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        //blocks unconsecutive columns
-        if(countToWin >=3) {
-            for (int rows = 0; rows < boardSize; rows++) {
-                for (int cols = 0; cols < boardSize; cols++) {
-                    if (getCell(rows, cols) == CellStatus.X) {
-                        int countX=1;
-                        int firstCol = 0;
-                        int countEmpty = 0;
-                        int empRow=99;
-                        int empCol=99;
-                        for(int i=1; i<countToWin -1; i++ ) {
-                            if (rows + i < boardSize) {
-                                if (getCell(rows+i, cols) == CellStatus.X) {
-                                    countX++;
-                                }
-                                if (getCell(rows+i, cols) == CellStatus.EMPTY) {
-                                    countEmpty++;
-                                    empRow = rows+i;
-                                    empCol = cols;
-                                }
-                            }else if (rows+i >= boardSize) {
-                                if (getCell(firstCol, cols) == CellStatus.X) {
-                                    countX++;
-                                }
-                                if (getCell(firstCol, cols) == CellStatus.EMPTY) {
-                                    countEmpty++;
-                                    empRow = firstCol;
-                                    empCol = cols;
-                                }
-                                firstCol++;
-                            }
 
-                            if(countX==countToWin-2 && countEmpty == 1 && empRow !=99) {
-                                if (rows + i+1 < boardSize) {
-                                    if (getCell(rows +i+1 , cols) == CellStatus.X) {
-                                        select(empRow, empCol);
-                                        return true;
-                                    }
-                                }
-                                else{
-                                    if (getCell(firstCol, cols) == CellStatus.X) {
-                                        select(empRow, empCol);
-                                        return true;
-                                    }
                                 }
                             }
                         }
                     }
+
                 }
+
+
+
+
             }
         }
+        //returns false if no move was selected
         return false;
     }
+
+    /******************************************************************
+     * This method checks for a move that could result in a possible
+     * win for the AI.
+     * @return returns true if the AI can move to a beneficial
+     * location
+     *****************************************************************/
+    public boolean smartMoveO() {
+
+        //Gets countToWin and BoardSize from Smart Panel
+        int countToWin = SuperTicTacToePanel.getCountToWin();
+        int boardSize = SuperTicTacToePanel.getBoardSize();
+
+        //Integers that help count the first row and column
+        int firstCol = 0;
+        int firstRow = 0;
+        //Counts empty spaces and Os
+        int smartCount = 0;
+
+        //Random determines which spot the AI selects
+        randMove = new Random(countToWin);
+
+        //array that saves the coordinates of possible moves
+        smartMoveRow= new int [100];
+        smartMoveCol= new int [100];
+
+        //Checks Rows for possible winning locations
+        for (int rows = 0; rows < boardSize; rows++) {
+            for (int cols = 0; cols < boardSize; cols++) {
+                if (getCell(rows, cols) == CellStatus.O || getCell(rows, cols) == CellStatus.EMPTY) {
+                    // Save locations
+                    smartMoveRow[0] = rows;
+                    smartMoveCol[0] = cols;
+                    firstCol = 0;
+
+                    //Counts empty and Os
+                    smartCount = 1;
+
+                    //Sets the array to a larger than possible amount, which prevents it from being randomly selected
+                    if (getCell(rows, cols) == CellStatus.O) {
+                        smartMoveRow[0] = 99;
+                        smartMoveCol[0] = 99;
+
+                    }
+                    //check the for empty spaces or Os
+                    for (int i = 1; i < countToWin; i++) {
+                        //Checks the next column
+                        if (cols + i < boardSize) {
+                            //check the for empty spaces or Os
+                            if (getCell(rows, cols + i) == CellStatus.O
+                                    || getCell(rows, cols + i) == CellStatus.EMPTY) {
+                                smartCount++;
+                                //If the cell is O, sets the array to unreachable amount
+                                if (getCell(rows, cols + i) == CellStatus.O) {
+
+                                    smartMoveRow[i] = 99;
+                                    smartMoveCol[i] = 99;
+
+                                }
+                                //If the cell is empty, records location in an array
+                                if (getCell(rows, cols + i) == CellStatus.EMPTY) {
+
+                                    smartMoveRow[i] = rows;
+                                    smartMoveCol[i] = cols + i;
+
+                                }
+                            }
+                            //Checks the first column if the next column does not exist
+                        } else if (cols + i >= boardSize) {
+
+                            if (getCell(rows, firstCol) == CellStatus.EMPTY
+                                    || getCell(rows, firstCol) == CellStatus.O) {
+                                smartCount++;
+                                //If the cell is O, sets the array to unreachable amount
+                                if (getCell(rows, firstCol) == CellStatus.O) {
+                                    smartMoveRow[i] = 99;
+                                    smartMoveCol[i] = 99;
+                                }
+                                //If the cell is empty, records location in an array
+                                if (getCell(rows, firstCol) == CellStatus.EMPTY) {
+                                    smartMoveRow[i] = rows;
+                                    smartMoveCol[i] = firstCol;
+
+                                }
+                            }
+                            firstCol++;
+                        }
+                        //If the count is equal to the connection then it selects a random empty location
+                        if (smartCount == countToWin) {
+                            //It tries 50 times to select a spot
+                            for (i = 0; i < 50; i++) {
+                                int moveIndex = randMove.nextInt(countToWin);
+                                // repeats if slot selected is not empty
+                                if (smartMoveRow[moveIndex] != 99 && smartMoveCol[moveIndex] != 99) {
+
+                                    select(smartMoveRow[moveIndex], smartMoveCol[moveIndex]);
+
+                                    return true;
+                                }
+
+                            }
+                        }
+                    }
+                }
+
+            }
+        }
+        //Checks Columns for possible winning locations
+        for (int rows = 0; rows < boardSize; rows++) {
+            for (int cols = 0; cols < boardSize; cols++) {
+                //check if the cell is an O or empty
+                if (getCell(rows, cols) == CellStatus.O || getCell(rows, cols) == CellStatus.EMPTY) {
+                    //Saves the location of empty cell
+                    smartMoveRow[0] = rows;
+                    smartMoveCol[0] = cols;
+                    smartCount = 1;
+                    firstRow = 0;
+                    //Saves an unreachable location for cells with O
+                    if (getCell(rows, cols) == CellStatus.O) {
+                        smartMoveRow[0] = 99;
+                        smartMoveCol[0] = 99;
+
+                    }
+                    //Checks consecutive rows for empty and Os
+                    for (int i = 1; i < countToWin; i++) {
+                        //Checks if next row exists
+                        if (rows + i < boardSize) {
+                            //checks for empty and O and increments smartCount
+                            if (getCell(rows + i, cols) == CellStatus.O
+                                    || getCell(rows + i, cols) == CellStatus.EMPTY) {
+                                smartCount++;
+                                //If O ,Saves a unreachable location
+                                if (getCell(rows + i, cols) == CellStatus.O) {
+                                    smartMoveRow[i] = 99;
+                                    smartMoveCol[i] = 99;
+                                }
+                                //If empty ,Saves the location of the empty
+                                if (getCell(rows + i, cols) == CellStatus.EMPTY) {
+                                    smartMoveRow[i] = rows + i;
+                                    smartMoveCol[i] = cols;
+
+                                }
+                                //Goes to first row if next row does not exist
+                            } else if (rows + i >= boardSize) {
+                                //checks for empty and O and increments smartCount
+                                if (getCell(firstRow, cols) == CellStatus.EMPTY
+                                        || getCell(firstRow, cols) == CellStatus.O) {
+                                    smartCount++;
+                                    //If O , saves a unreachable location
+                                    if (getCell(firstRow, cols) == CellStatus.O) {
+
+                                        smartMoveRow[i] = 99;
+                                        smartMoveCol[i] = 99;
+                                    }
+                                    //If empty ,Saves the location of the empty
+                                    if (getCell(firstRow, cols) == CellStatus.EMPTY) {
+                                        smartMoveRow[i] = firstRow;
+                                        smartMoveCol[i] = cols;
+
+                                    }
+
+                                }
+                                //increments firstRow
+                                firstRow++;
+                            }
+                            //If the smartCount is equal to the number of connection then it selects a random empty space
+                            if (smartCount == countToWin) {
+                                // repeats if slot selected is not empty
+                                for (i = 0; i < 25; i++) {
+                                    int moveIndex = randMove.nextInt(countToWin);
+                                    // repeats if smartMoveCol[moveIndex] == 99 (not empty)
+                                    if (smartMoveRow[moveIndex] != 99 && smartMoveCol[moveIndex] != 99) {
+                                        select(smartMoveRow[moveIndex], smartMoveCol[moveIndex]);
+                                        return true;
+                                    }
+
+                                }
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
+        //returns false if no move was selected
+        return false;
+    }
+
 
     public boolean isRememberChoice() {
         return rememberChoice;

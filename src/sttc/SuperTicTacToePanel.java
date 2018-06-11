@@ -19,6 +19,7 @@ public class SuperTicTacToePanel extends JPanel {
     private ImageIcon xIcon;
     private ImageIcon oIcon;
     private ImageIcon emptyIcon;
+    private ImageIcon panelIcon;
     private JPanel superPanel;
 
 
@@ -43,6 +44,7 @@ public class SuperTicTacToePanel extends JPanel {
         xIcon = new ImageIcon(getClass().getResource(("x.jpg")));
         oIcon = new ImageIcon(getClass().getResource(("o.jpg")));
         emptyIcon = new ImageIcon(getClass().getResource(("e.jpg")));
+        panelIcon = new ImageIcon(getClass().getResource("images.png"));
 
         // This is the game panel setup
         superPanel = new JPanel();
@@ -166,18 +168,24 @@ public class SuperTicTacToePanel extends JPanel {
                     if (board[row][col] == event.getSource()) {
                         game.select(row, col);
 
-                        //If O is AI
-                        if (game.isRememberChoice() ){
-                            if(!game.canIwin()) {
-                                if(!game.canIBlock()) {
-                                    game.randomMove();
+                        if (game.getGameStatus() == GameStatus.IN_PROGRESS) {
+                            //If O is AI
+                            if (game.isRememberChoice()) {
+                                if (!game.canIwin()) {
+                                    if (!game.canIBlock()) {
+                                        if(!game.smartMoveO()){
+                                            game.randomMove();
+                                        }
+                                    }
                                 }
-                            }
-                        }else {
-                            //If X is AI
-                            if(!game.canIBlock()) {
-                                if(!game.canIwin()) {
-                                    game.randomMove();
+                            } else {
+                                //If X is AI
+                                if (!game.canIBlock()) {
+                                    if (!game.canIwin()) {
+                                        if(!game.smartMoveX()) {
+                                            //game.randomMove();
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -199,22 +207,22 @@ public class SuperTicTacToePanel extends JPanel {
 
             if (game.getGameStatus() == GameStatus.O_WON) {
                 highlightBoard();
-                JOptionPane.showMessageDialog(null, "O won and X lost!" + "\nThe game will now reset");
+                JOptionPane.showMessageDialog(null, "O won and X lost!" + "\nThe game will now reset", "WINNER", 3, panelIcon);
                 oWinsCount++;
                 updateScore();
                 game.Reset();
                 displayBoard();
             }
-            if (game.getGameStatus() == GameStatus.X_WON) {
+            else if (game.getGameStatus() == GameStatus.X_WON) {
                 highlightBoard();
-                JOptionPane.showMessageDialog(null, "X won and 0 lost!" + "\nThe game will now reset");
+                JOptionPane.showMessageDialog(null, "X won and 0 lost!" + "\nThe game will now reset", "WINNER", 3, panelIcon);
                 xWinsCount++;
                 updateScore();
                 game.Reset();
                 displayBoard();
             }
-            if (game.getGameStatus() == GameStatus.CATS) {
-                JOptionPane.showMessageDialog(null, "Cats game" + "\nThe game" + " will now reset");
+            else if (game.getGameStatus() == GameStatus.CATS) {
+                JOptionPane.showMessageDialog(null, "Cats game" + "\nThe game" + " will now reset", "DRAW", 3, panelIcon);
                 updateScore();
                 game.Reset();
                 displayBoard();
@@ -231,7 +239,7 @@ public class SuperTicTacToePanel extends JPanel {
         public void actionPerformed(ActionEvent event) {
             if (event.getSource() == quitButton) {
                 int exit = JOptionPane.showConfirmDialog(null, "Are you sure you want to quit?", "Exit",
-                        JOptionPane.YES_NO_OPTION);
+                        JOptionPane.YES_NO_OPTION, 3, panelIcon);
 
                 if (exit == JOptionPane.YES_OPTION) {
                     System.exit(0);
@@ -239,7 +247,7 @@ public class SuperTicTacToePanel extends JPanel {
             }
             if(event.getSource() == resetButton){
                 int reset = JOptionPane.showConfirmDialog(null, "Are you sure you want to reset?", "Reset",
-                        JOptionPane.YES_NO_OPTION);
+                        JOptionPane.YES_NO_OPTION, 3, panelIcon);
 
                 if(reset == JOptionPane.YES_OPTION){
                     SuperTicTacToe.TicTacToe.getContentPane().removeAll();
@@ -278,3 +286,4 @@ public class SuperTicTacToePanel extends JPanel {
         }
     }
 }
+
