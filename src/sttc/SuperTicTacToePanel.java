@@ -38,12 +38,13 @@ public class SuperTicTacToePanel extends JPanel {
     public SuperTicTacToePanel() {
 
         game = new SuperTicTacToeGame();
+        setupGame();
         board = new JButton[boardSize][boardSize];
 
         // gets icons from the class file(This was a pain in the ass)
-        xIcon = new ImageIcon(getClass().getResource(("x.jpg")));
-        oIcon = new ImageIcon(getClass().getResource(("o.jpg")));
-        emptyIcon = new ImageIcon(getClass().getResource(("e.jpg")));
+        xIcon = new ImageIcon(getClass().getResource("x.jpg"));
+        oIcon = new ImageIcon(getClass().getResource("o.jpg"));
+        emptyIcon = new ImageIcon(getClass().getResource("e.jpg"));
         panelIcon = new ImageIcon(getClass().getResource("images.png"));
 
         // This is the game panel setup
@@ -56,6 +57,126 @@ public class SuperTicTacToePanel extends JPanel {
         displayOptionPanel();
         drawBoard();
         displayBoard();
+
+    }
+
+    public void setupGame(){
+
+        //variables needed for initializing the board
+        String sizeSelect;
+        int connector = 0;
+        String connections;
+
+        //do this loop, if input invalid, repeat
+        do {
+
+            try {
+                //String to select board size
+                sizeSelect = (String) JOptionPane.showInputDialog(null,
+                        "Enter a board size between 3 and 9: ", "Board Size", JOptionPane.QUESTION_MESSAGE,
+                        panelIcon, null, null);
+
+                //if the user clicked ok
+                if(sizeSelect != null) {
+
+                    //cast string into an integer
+                    game.boardLength = Integer.parseInt(sizeSelect);
+
+                    //if input out of bounds, show error message
+                    if (game.boardLength < 3 || game.boardLength > 9) {
+                        JOptionPane.showMessageDialog(null, "Invalid input \nTry again",
+                                "ERROR", JOptionPane.ERROR_MESSAGE, panelIcon);
+                    }
+                }else{  //if the user clicked cancel
+                    System.exit(0);
+                }
+            } catch (Exception error){  //if the user entered something other than a single number with the range
+                JOptionPane.showMessageDialog(null, "Invalid input \nTry again",
+                        "ERROR", JOptionPane.ERROR_MESSAGE, panelIcon);
+                continue;   //show the input dialog again
+            }
+
+        } while (game.boardLength < 3 || game.boardLength > 9) ;
+
+        //set board size from user input
+        setBoardSize(game.boardLength);
+
+        //do this loop, if input invalid, repeat
+        do{
+            try {
+                //enter the amount of connections needed to win between 3 and boardSize
+                connections = (String) JOptionPane.showInputDialog(null, "Enter a connections to win " +
+                        "between 3 and " + game.boardLength + " : ", "Connections", 3, panelIcon, null, null);
+
+                //if the user clicked ok
+                if(connections != null) {
+
+                    //cast string into an integer
+                    connector = Integer.parseInt(connections);
+
+                    //if input out of bounds, show error message
+                    if (connector < 3 || connector > game.boardLength) {
+                        JOptionPane.showMessageDialog(null, "Invalid input \nTry again",
+                                "ERROR", JOptionPane.ERROR_MESSAGE, panelIcon);
+                    }
+                }else{  //if the user clicked cancel
+                    System.exit(0);
+                }
+            }catch (Exception error){   //if the user entered something other than a single number with the range
+                JOptionPane.showMessageDialog(null, "Invalid input \nTry again",
+                        "ERROR", JOptionPane.ERROR_MESSAGE, panelIcon);
+                continue;   //show the input dialog again
+            }
+        }while(connector < 3 || connector > game.boardLength);
+
+        //set connections required from user input
+        setCountToWin(connector);
+
+        //Ask if X should go first (player select)
+        game.turn = JOptionPane.showConfirmDialog(null, "Do you want X to start?",
+                "SELECT PLAYER", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, panelIcon);
+
+        //Save user choice
+        if (game.turn == JOptionPane.YES_OPTION) {
+
+            //if user chose yes
+            game.xTurn = true;
+
+            //Saves choice
+            game.rememberChoice = true;
+        } else {
+
+            //if user chose no
+            game.xTurn = false;
+
+            //Saves choice
+            game.rememberChoice = false;
+        }
+
+        //Sets default Status (See GameStatus.Java)
+        game.status = GameStatus.IN_PROGRESS;
+
+        //sets size of cell status and sets everything to empty
+        //Status can contain (X,O, or empty) (See CellStatus.java)
+        game.board = new CellStatus[getBoardSize()][getBoardSize()];
+
+        //make all cells empty
+        for (int row = 0; row < getBoardSize();  row++) {
+            for (int col = 0; col < getBoardSize(); col++) {
+                game.board[row][col] = CellStatus.EMPTY;
+
+            }
+        }
+
+        //instantiate 2 arrays to keep track of the moves and a counter
+        game.undoCol = new int [game.boardLength * game.boardLength];
+        game.undoRows = new int [game.boardLength * game.boardLength];
+        game.undoIndex = 0;
+
+        //instantiate 2 arrays to highlight the winning sequence and a counter
+        game.highlightCol = new int [game.boardLength * game.boardLength];
+        game.highlightRows = new int [game.boardLength * game.boardLength];
+        game.highlightNeeded = false;
     }
 
     public void displayOptionPanel() {
@@ -63,7 +184,6 @@ public class SuperTicTacToePanel extends JPanel {
         // This lays out the options buttons.
         optionsPanel = new JPanel();
         optionsPanel.setLayout(new GridLayout(6, 1));
-
 
         xWinsCount = 0;
         oWinsCount = 0;
@@ -88,7 +208,6 @@ public class SuperTicTacToePanel extends JPanel {
         optionsPanel.add(undoButton);
         optionsPanel.add(resetButton);
         optionsPanel.add(quitButton);
-
 
         add(optionsPanel, BorderLayout.EAST);
     }
@@ -276,6 +395,7 @@ public class SuperTicTacToePanel extends JPanel {
     }
 
     public void highlightBoard(){
+
         if(game.isHighlightNeeded()) {
             for (int i = 0; i < countToWin; i++) {
                 for(int j = 0; j < countToWin ; j++) {
@@ -286,4 +406,3 @@ public class SuperTicTacToePanel extends JPanel {
         }
     }
 }
-
