@@ -5,152 +5,29 @@ import java.util.Random;
 import javax.swing.JOptionPane;
 
 public class SuperTicTacToeGame {
-    private CellStatus[][] board;
-    private int [] undoRows;
-    private int [] undoCol;
-    private int undoIndex;
+    protected CellStatus[][] board;
+    protected int [] undoRows;
+    protected int [] undoCol;
+    protected int undoIndex;
 
-    private boolean xTurn;
-    private boolean rememberChoice;
+    protected boolean xTurn;
+    protected boolean rememberChoice;
 
-    private int [] highlightRows;
-    private int [] highlightCol;
-    private boolean highlightNeeded;
+    protected int [] highlightRows;
+    protected int [] highlightCol;
+    protected boolean highlightNeeded;
 
     private int [] smartMoveRow;
     private int [] smartMoveCol;
 
-
-    private GameStatus status;
-    private String sizeSelect;
-    private String connections;
-    private int connecter;
-    private int boardLength;
-    private int turn;
+    protected GameStatus status;
+    protected int boardLength = 0;
+    protected int turn;
     private int [] positionRow ;
     private int [] positionCol;
     private Random randMove;
 
-    public SuperTicTacToeGame() {
-
-        setupGame();
-
-    }
-
-    public void setupGame(){
-
-        //do this loop, if input invalid, repeat
-        do {
-
-            try {
-                //String to select board size
-                this.sizeSelect = JOptionPane.showInputDialog(null,
-                        "Enter a board size between 3 and 9: ", "Board Size", 3);
-
-                //if the user clicked ok
-                if(sizeSelect != null) {
-
-                    //cast string into an integer
-                    boardLength = Integer.parseInt(sizeSelect);
-
-                    //if input out of bounds, show error message
-                    if (boardLength < 3 || boardLength > 9) {
-                        JOptionPane.showMessageDialog(null, "Invalid input \nTry again",
-                                "ERROR", 0);
-                    }
-                }else{  //if the user clicked cancel
-                    System.exit(0);
-                }
-            } catch (Exception error){  //if the user entered something other than a single number with the range
-                JOptionPane.showMessageDialog(null, "Invalid input \nTry again",
-                        "ERROR", 0);
-                continue;   //show the input dialog again
-            }
-
-        } while (boardLength < 3 || boardLength > 9) ;
-
-
-        //set board size from user input
-        SuperTicTacToePanel.setBoardSize(boardLength);
-
-        //do this loop, if input invalid, repeat
-        do{
-            try {
-                //enter the amount of connections needed to win between 3 and boardSize
-                this.connections = JOptionPane.showInputDialog(null, "Enter a connections to win " +
-                        "between 2 and " + boardLength + " : ", "Connections", 3);
-
-                //if the user clicked ok
-                if(connections != null) {
-
-                    //cast string into an integer
-                    this.connecter = Integer.parseInt(connections);
-
-                    //if input out of bounds, show error message
-                    if (connecter < 2 || connecter > boardLength) {
-                        JOptionPane.showMessageDialog(null, "Invalid input \nTry again",
-                                "ERROR", 0);
-                    }
-                }else{  //if the user clicked cancel
-                    System.exit(0);
-                }
-            }catch (Exception error){   //if the user entered something other than a single number with the range
-                JOptionPane.showMessageDialog(null, "Invalid input \nTry again",
-                        "ERROR", 0);
-                continue;   //show the input dialog again
-            }
-        }while(connecter < 2 || connecter > boardLength);
-
-        //set connections required from user input
-        SuperTicTacToePanel.setCountToWin(this.connecter);
-
-
-        //Ask if X should go first (player select)
-        turn = JOptionPane.showConfirmDialog(null, "Do you want X to start?",
-                "SELECT PLAYER", JOptionPane.YES_NO_OPTION);
-
-        //Save user choice
-        if (turn == JOptionPane.YES_OPTION) {
-
-            //if user chose yes
-            this.xTurn = true;
-
-            //Saves choice
-            this.rememberChoice = true;
-        } else {
-
-            //if user chose no
-            this.xTurn = false;
-
-            //Saves choice
-            this.rememberChoice = false;
-        }
-
-        //Sets default Status (See GameStatus.Java)
-        status = GameStatus.IN_PROGRESS;
-
-        //sets size of cell status and sets everything to empty
-        //Status can contain (X,O, or empty) (See CellStatus.java)
-        board = new CellStatus[SuperTicTacToePanel.getBoardSize()][SuperTicTacToePanel.getBoardSize()];
-
-        //make all cells empty
-        for (int row = 0; row < SuperTicTacToePanel.getBoardSize();  row++) {
-            for (int col = 0; col < SuperTicTacToePanel.getBoardSize(); col++) {
-                board[row][col] = CellStatus.EMPTY;
-
-            }
-        }
-
-        //instantiate 2 arrays to keep track of the moves and a counter
-        undoCol = new int [boardLength*boardLength];
-        undoRows = new int [boardLength*boardLength];
-        undoIndex = 0;
-
-        //instantiate 2 arrays to highlight the winning sequence and a counter
-        highlightCol = new int [boardLength * boardLength];
-        highlightRows = new int [boardLength * boardLength];
-        highlightNeeded = false;
-    }
+    public SuperTicTacToeGame() {}
 
     public void select(int row, int col) {
 
@@ -490,7 +367,7 @@ public class SuperTicTacToeGame {
         //Counts Empty Spaces
         int countEmpty = 0;
         //Used as the index for the array
-        int index =0 ;
+        int index = 0 ;
 
         //stops the game from making a move if the game is over
         if(getGameStatus() != GameStatus.X_WON) {
@@ -1594,7 +1471,6 @@ public class SuperTicTacToeGame {
         //returns false if no move was selected
         return false;
     }
-
 
     public boolean isRememberChoice() {
         return rememberChoice;
