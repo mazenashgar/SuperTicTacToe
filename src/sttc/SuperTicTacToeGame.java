@@ -2,33 +2,80 @@ package sttc;
 
 import java.util.Random;
 
-import javax.swing.JOptionPane;
-
+/**********************************************************************
+ * This is the class that runs the logic of the Super Tic Tac Toe game.
+ * The game only considers horizontal or vertical wins, and the board
+ * wraps around like a ball shape.
+ *
+ * @author Max Carson
+ * @author Mazen Ashgar
+ *
+ * @version 6/13/2018
+ *********************************************************************/
 public class SuperTicTacToeGame {
+
+    /** A two dimensional array to keep track of cell status*/
     protected CellStatus[][] board;
+
+    /** An integer array to keep track of undo row moves*/
     protected int [] undoRows;
+
+    /** An integer array to keep track of undo column moves*/
     protected int [] undoCol;
+
+    /** An integer to keep track of the undo index for array elements*/
     protected int undoIndex;
 
+    /** A variable to keep track of whose turn X or O's */
     protected boolean xTurn;
+
+    /** A variable to store the users choice of who goes first X or O*/
     protected boolean rememberChoice;
 
+    /** An integer array to keep track of highlight row elements*/
     protected int [] highlightRows;
+
+    /** An integer array to keep track of highlight column elements*/
     protected int [] highlightCol;
+
+    /** A boolean to decied if the board needs highlighting*/
     protected boolean highlightNeeded;
 
+    /** An integer array to keep track of smartMove row moves*/
     private int [] smartMoveRow;
+
+    /** An integer array to keep track of smartMove column moves*/
     private int [] smartMoveCol;
 
+    /** An object of type GameStatus to keep track of Game status*/
     protected GameStatus status;
-    protected int boardLength = 0;
-    protected int turn;
+
+    /** An integer variable to keep track of the board size*/
+    protected int boardLength;
+
+    /**An integer array to keep track of position row of empty spaces*/
     private int [] positionRow ;
+
+    /**An integer array to keep track of position col of empty spaces*/
     private int [] positionCol;
+
+    /** An object of type Random to generate random moves*/
     private Random randMove;
 
+    /******************************************************************
+     * Constructor
+     *****************************************************************/
     public SuperTicTacToeGame() {}
 
+    /******************************************************************
+     * This method is called when the user selects a cell on the board.
+     * the cell is changed to a status depending on the turn, and also
+     * keeping up with the undo arrays so those moves can be undone.
+     * Then switch the players turn
+     *
+     * @param row the row number of the cell
+     * @param col the column number of the cell
+     *****************************************************************/
     public void select(int row, int col) {
 
         //sets status based on the users turn
@@ -49,6 +96,12 @@ public class SuperTicTacToeGame {
         }
     }
 
+    /******************************************************************
+     * This method reset the game by making all the cell status' empty
+     * Also, reseting the undo index back to 0 so it starts over,
+     * also, highlighting is not needed so highlighNeeded
+     * is set to false
+     *****************************************************************/
     public void Reset() {
 
         //Sets all to the cell status of empty
@@ -68,7 +121,7 @@ public class SuperTicTacToeGame {
      * the winner. If not it will return in progress.
      *
      * @return GameStatus used to determine if the
-     * game  has a winner or if the game is still in progress
+     * game has a winner or if the game is still in progress
      *****************************************************************/
     public GameStatus getGameStatus() {
 
@@ -292,6 +345,13 @@ public class SuperTicTacToeGame {
 
     }
 
+    /******************************************************************
+     * This method is called when the undo button is pressed. if the
+     * undo index still has turns to undo then it would undo the last
+     * two moves by makes the cells status empty.
+     *
+     * @return boolean if the undo was successful or not
+     *****************************************************************/
     public boolean undo(){
 
         //if there is still turns to undo
@@ -314,46 +374,113 @@ public class SuperTicTacToeGame {
         return false;
     }
 
+    /******************************************************************
+     * This method returns if the board needs highlighting or no
+     * and that only changes if there is a winner.
+     *
+     * @return highlightNeeded boolean if highlight is needed or no
+     *****************************************************************/
     public boolean isHighlightNeeded() {
         return highlightNeeded;
     }
 
+    /******************************************************************
+     * This method returns the value in the element "index"
+     * in the highlight column array.
+     *
+     * @param index the element we need the value of
+     * @return highlightCol[index] the value of the element passed
+     *****************************************************************/
     public int getHighlightCol(int index) {
         return highlightCol[index];
     }
 
+    /******************************************************************
+     * This method returns the value in the element "index"
+     * in the highlight row array.
+     *
+     * @param index the element we the value of
+     * @return highlightRows[index] the value of the element passed
+     *****************************************************************/
     public int getHighlightRows(int index) {
         return highlightRows[index];
     }
 
+    /******************************************************************
+     * This method returns if it is X's turn or no
+     *
+     * @return xTurn true or false
+     *****************************************************************/
     public boolean isxTurn() {
         return xTurn;
     }
 
+    /******************************************************************
+     * This method return the value of the current element of
+     * the Undo rows array.
+     *
+     * @return undoRows[getUndoIndex()] the current value of the array
+     *****************************************************************/
     public int getUndoRows() {
         return undoRows[getUndoIndex()];
     }
 
+    /******************************************************************
+     * This method sets the value of the current index
+     * in the undo row array equal to the parameter "index"
+     *
+     * @param index the value to set the value of
+     *              the array element equal to
+     *****************************************************************/
     public void setUndoRows(int index) {
         this.undoRows[getUndoIndex()] = index;
     }
 
+    /******************************************************************
+     * This method return the value of the current element of
+     * the Undo column array.
+     *
+     * @return undoCol[getUndoIndex()] the current value of the array
+     *****************************************************************/
     public int getUndoCol() {
         return undoCol[getUndoIndex()];
     }
 
+    /******************************************************************
+     * This method sets the value of the current index
+     * in the undo column array equal to the parameter "index"
+     *
+     * @param index the value to set the value of
+     *              the array element equal to
+     *****************************************************************/
     public void setUndoCol(int index) {
         this.undoCol[getUndoIndex()] = index;
     }
 
+    /******************************************************************
+     * This method return the undo index used in the undo arrays
+     *
+     * @return undoIndex the index of the undo arrays
+     *****************************************************************/
     public int getUndoIndex() {
         return undoIndex;
     }
 
+    /******************************************************************
+     * This method increaments the undo index for the undo arrays
+     *****************************************************************/
     public void incUndoIndex() {
         this.undoIndex++;
     }
 
+    /******************************************************************
+     * this method return a cell after passing the location of it
+     * from the parameters row, col
+     *
+     * @param row the row number of the cell
+     * @param col the column number of the cell
+     * @return board[row][col] a cell from the board
+     *****************************************************************/
     public CellStatus getCell(int row, int col) {
         return board[row][col];
     }
@@ -418,6 +545,7 @@ public class SuperTicTacToeGame {
     /******************************************************************
      * This method checks for a winning space and selects the
      * winning space or returns false otherwise
+     *
      * @return returns true if the AI can win
      *****************************************************************/
     public boolean canIwin() {
@@ -756,6 +884,7 @@ public class SuperTicTacToeGame {
     /******************************************************************
      * This method checks if the player is going to win and selects a
      * space for the AI to block
+     *
      * @return returns true if the AI can block
      *****************************************************************/
     public boolean canIBlock() {
@@ -1097,6 +1226,7 @@ public class SuperTicTacToeGame {
     /******************************************************************
      * This method checks for a move that could result in a possible
      * win for the AI.
+     *
      * @return returns true if the AI can move to a beneficial
      * location
      *****************************************************************/
@@ -1288,6 +1418,7 @@ public class SuperTicTacToeGame {
     /******************************************************************
      * This method checks for a move that could result in a possible
      * win for the AI.
+     *
      * @return returns true if the AI can move to a beneficial
      * location
      *****************************************************************/
@@ -1472,6 +1603,13 @@ public class SuperTicTacToeGame {
         return false;
     }
 
+    /******************************************************************
+     * This method return the value of rememberChoice
+     * which is what the user chose to go first, either X or O
+     * if X was chosen, then rememberChoice is true
+     *
+     * @return rememberChoice what the user chose to go first
+     *****************************************************************/
     public boolean isRememberChoice() {
         return rememberChoice;
     }
